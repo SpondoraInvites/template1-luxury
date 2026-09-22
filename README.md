@@ -27,15 +27,16 @@ Luxury additions:
 - **Cinematic opening** — a black curtain with a drawing gold ring and
   the couple's names; the tap that opens it also starts the music
   (browsers require a tap before audio). Set `intro.enabled: false` to
-  land straight on the hero. Skipped automatically under
-  `prefers-reduced-motion`.
+  land straight on the hero. Set `motion: "honor"` to skip it
+  automatically for guests whose device asks for reduced motion.
 - **Premium cinematic design** — spotlight hero, film-grain overlay,
   vignette, gold corner frames, gilded cards and buttons with a sheen
 - **Advanced animations** — letter-by-letter hero titles, rising gold
   dust, a story timeline whose gold rail draws itself as the guest
   reads, flip countdown, hero parallax, scroll progress bar, staggered
-  reveals, ken-burns-style lightbox fades — all disabled under
-  `prefers-reduced-motion`
+  reveals, ken-burns-style lightbox fades — on for everyone by default;
+  `motion: "honor"` in config.js switches to a still version for
+  guests whose device asks for reduced motion
 - **Custom sections** — the signature Luxury feature: any number of
   extra sections from four layouts (`quote`, `text`, `cards`, `faq`),
   defined purely in config (see `customSections` below). Samples
@@ -137,6 +138,11 @@ python3 -m http.server 8080
 
 (Opening `index.html` directly via `file://` also works — only the map
 iframe, clipboard and music need a real http(s) origin when deployed.)
+
+**Motion:** the animated experience plays for everyone by default. To
+honour the visitor's own reduced-motion setting instead (the accessible
+behaviour — curtain and effects replaced by a still, instant page), set
+`motion: "honor"` in `config.js`.
 
 ## Deploying
 

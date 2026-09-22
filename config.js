@@ -28,6 +28,13 @@ const INVITE_CONFIG = {
      Leave { } for the defaults shown below.                      */
   fonts: {},
 
+  /* ---------- Motion ----------
+     "always" — the cinematic motion plays for every guest (default).
+     "honor"  — guests whose device asks for reduced motion
+                (prefers-reduced-motion) get a still, instant version:
+                no curtain, no letter effects, no dust.               */
+  motion: "always",
+
   /* ---------- Cinematic opening ----------
      A black "curtain" opens the invitation. The tap that opens it
      also starts the music (browsers need a tap before audio).
@@ -179,7 +186,7 @@ const INVITE_CONFIG = {
       { src: "assets/photos/photo-4.svg", alt: "Damask pattern artwork", caption: "Woven like jaal", wide: false },
       { src: "assets/photos/photo-5.svg", alt: "Moorish arch with hanging lights artwork", caption: "The grand entrance", wide: true },
       { src: "assets/photos/photo-6.svg", alt: "Gold botanical sprays artwork", caption: "Golden hour", wide: false },
-      { src: "assets/photos/photo-7.svg", alt: "Ornate hanging lantern artwork", caption: "Light upon light", wide: false, tall: true },
+      { src: "assets/photos/photo-7.svg", alt: "Ornate hanging lantern artwork", caption: "Light upon light", wide: false },
       { src: "assets/photos/photo-8.svg", alt: "Gold paisley motif artwork", caption: "Where it all begins", wide: false },
     ],
   },

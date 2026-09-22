@@ -27,8 +27,17 @@
     });
   }
 
-  var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  if (reduced) document.body.classList.add("reduced");
+  /* Motion default: "always" — the cinematic experience plays for every
+     guest. Set INVITE_CONFIG.motion = "honor" to restore the accessible
+     behaviour: guests whose device asks for reduced motion
+     (prefers-reduced-motion) get a still, instant version instead. */
+  var honorReducedMotion = cfg.motion === "honor";
+  var reduced = honorReducedMotion &&
+    !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  if (reduced) {
+    document.body.classList.add("reduced");
+    document.documentElement.classList.add("motion-reduced");
+  }
 
   /* Shared with the intro + music modules: will the curtain play? */
   var introEl = $("#intro");
@@ -168,6 +177,13 @@
   }
 
   /* ============ 3. Cinematic opening ============ */
+  // Choreography (kept brief — the page is interactive again in ~0.45s):
+  //   t=0      guest taps → music starts, content bows out, seam blooms
+  //   t≈430ms  the two veils part and scrolling unlocks; the hero's own
+  //            entrance begins in step (its delays carry the ceremony:
+  //            blessing → monogram → names letter-by-letter → rule →
+  //            date → place → frame → corners)
+  //   t≈2.05s  the overlay is dropped entirely
   (function initIntro() {
     if (!introEl) return;
     if (!introActive) {
@@ -177,16 +193,33 @@
     }
 
     document.body.classList.add("is-locked");
+    var openBtn = $("#introOpen");
 
     function open() {
-      introEl.classList.add("is-open");
-      document.body.classList.remove("is-locked");
-      document.body.classList.add("intro-done");
+      if (introEl.classList.contains("is-opening")) return; // ignore double taps
+      introEl.classList.add("is-opening");
       if (typeof musicKick === "function") musicKick();
-      setTimeout(function () { introEl.classList.add("is-done"); }, 1600);
+
+      setTimeout(function () {
+        introEl.classList.add("is-open");
+        document.body.classList.remove("is-locked");
+        // The hero starts hidden and enters while the curtains part —
+        // otherwise it would show through the gap fully formed.
+        document.body.classList.add("intro-done");
+      }, 430);
+
+      setTimeout(function () {
+        introEl.classList.add("is-done");
+        // Hand focus into the page now that the invitation is open.
+        var main = $("#invite");
+        if (main) {
+          main.setAttribute("tabindex", "-1");
+          try { main.focus({ preventScroll: true }); } catch (e) { main.focus(); }
+        }
+      }, 2050);
     }
 
-    $("#introOpen").addEventListener("click", open);
+    if (openBtn) openBtn.addEventListener("click", open);
   })();
 
   /* ============ 4. Hero letter reveal ============ */
@@ -236,6 +269,29 @@
     // Remove the sample chapter baked into index.html.
     var sample = storyList.querySelector(".chapter:not(.reveal)");
     if (sample) sample.remove();
+
+    // Gently illuminate the chapter the guest is reading: whichever
+    // chapter's centre sits nearest the middle of the viewport (rAF-gated).
+    if (!reduced) {
+      var chapters = $$(".chapter", storyList);
+      var picking = false;
+      var pickActive = function () {
+        picking = false;
+        var vh = window.innerHeight;
+        var best = null, bestDist = Infinity;
+        chapters.forEach(function (c) {
+          var r = c.getBoundingClientRect();
+          if (r.bottom < -80 || r.top > vh + 80) return;
+          var d = Math.abs(r.top + r.height / 2 - vh / 2);
+          if (d < bestDist) { bestDist = d; best = c; }
+        });
+        chapters.forEach(function (c) { c.classList.toggle("is-active", c === best); });
+      };
+      window.addEventListener("scroll", function () {
+        if (!picking) { picking = true; requestAnimationFrame(pickActive); }
+      }, { passive: true });
+      pickActive();
+    }
   }
 
   /* ============ 6. Event cards ============ */
@@ -266,8 +322,8 @@
       (ev.address ? row('<span class="row__dot" aria-hidden="true"></span>', "Address", ev.address) : "") +
       "</dl>" +
       '<div class="event-card__actions">' +
-      '<a class="link-btn" href="' + mapUrl + '" target="_blank" rel="noopener">View on Map \u2197</a>' +
-      (calUrl ? '<a class="link-btn link-btn--calendar" href="' + calUrl + '" target="_blank" rel="noopener">Add to Calendar \u2197</a>' : "") +
+      '<a class="link-btn" href="' + mapUrl + '" target="_blank" rel="noopener">View on Map <span class="link-btn__arrow" aria-hidden="true">\u2197</span></a>' +
+      (calUrl ? '<a class="link-btn link-btn--calendar" href="' + calUrl + '" target="_blank" rel="noopener">Add to Calendar <span class="link-btn__arrow" aria-hidden="true">\u2197</span></a>' : "") +
       "</div></article>"
     );
   }
@@ -693,11 +749,15 @@
       if (submitBtn) submitBtn.disabled = true;
 
       var finish = function (msg) {
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("is-sending");
+        }
         showDone(msg);
       };
 
       if (cfg.rsvp.endpoint) {
+        if (submitBtn) submitBtn.classList.add("is-sending");
         fetch(cfg.rsvp.endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },
@@ -836,6 +896,7 @@
     }
 
     var ticking = false;
+    var scrollCue = $(".hero__scroll");
 
     function update() {
       ticking = false;
@@ -848,6 +909,9 @@
         var max = (doc.scrollHeight - vh) || 1;
         bar.style.transform = "scaleX(" + Math.min(1, y / max).toFixed(4) + ")";
       }
+
+      // The scroll cue bows out once the guest starts moving.
+      if (scrollCue) scrollCue.classList.toggle("is-hidden", y > 60);
 
       // Story rail draws as the guest reads
       if (rail && timeline) {

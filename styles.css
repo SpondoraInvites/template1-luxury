@@ -173,6 +173,8 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* ============ Cinematic opening ============ */
+/* The two veils ARE the curtain. The stage itself stays transparent, so
+   when the panels part the invitation is genuinely, visibly revealed. */
 
 .intro {
   position: fixed;
@@ -180,7 +182,7 @@ button { font: inherit; cursor: pointer; }
   z-index: 90;
   display: grid;
   place-items: center;
-  background: var(--bg-deep);
+  background: transparent;
   text-align: center;
   padding: 24px;
 }
@@ -189,23 +191,84 @@ button { font: inherit; cursor: pointer; }
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 50.5%;
-  background: var(--bg-deep);
-  transition: transform 1.15s cubic-bezier(0.76, 0, 0.24, 1) 0.2s;
+  width: 50%;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.014) 0 2px,
+      transparent 2px 44px,
+      rgba(0, 0, 0, 0.22) 44px 46px,
+      transparent 46px 90px),
+    radial-gradient(90% 62% at var(--veil-lit, 100%) 0%, var(--glow), transparent 58%),
+    var(--bg-deep);
+  transition: transform 1.3s cubic-bezier(0.85, 0, 0.15, 1) 0.12s;
+  will-change: transform;
 }
 
 .intro__veil--l {
   left: 0;
-  box-shadow: inset -1px 0 0 var(--line);
+  --veil-lit: 100%;
+  box-shadow: inset -46px 0 54px -42px rgba(0, 0, 0, 0.92);
 }
 
 .intro__veil--r {
   right: 0;
-  box-shadow: inset 1px 0 0 var(--line);
+  --veil-lit: 0%;
+  box-shadow: inset 46px 0 54px -42px rgba(0, 0, 0, 0.92);
+  transition-delay: 0.19s; /* the second panel answers the first, a beat later */
 }
 
-.intro.is-open .intro__veil--l { transform: translateX(-100.5%); }
-.intro.is-open .intro__veil--r { transform: translateX(100.5%); }
+/* Gold trim along each panel's leading edge */
+.intro__veil::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent, var(--gold-deep) 14%, var(--gold) 32%,
+    var(--gold-soft) 50%, var(--gold) 68%, var(--gold-deep) 86%, transparent);
+  opacity: 0.85;
+}
+
+.intro__veil--l::after { right: 0; }
+.intro__veil--r::after { left: 0; }
+
+/* The seam of light where the closed panels meet */
+.intro__seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: linear-gradient(180deg,
+    transparent, var(--gold) 12%, var(--gold-soft) 50%, var(--gold) 88%, transparent);
+  opacity: 0.3;
+  transition: opacity 0.55s ease, box-shadow 0.55s ease;
+  pointer-events: none;
+}
+
+.intro.is-opening .intro__seam {
+  opacity: 1;
+  box-shadow: 0 0 24px 2px var(--glow), 0 0 90px 12px var(--glow);
+}
+
+.intro.is-open .intro__veil--l { transform: translate3d(-101%, 0, 0); }
+.intro.is-open .intro__veil--r { transform: translate3d(101%, 0, 0); }
+
+/* As the panels part, the seam flares wide and dissolves into the light. */
+.intro.is-open .intro__seam {
+  opacity: 1;
+  box-shadow: 0 0 34px 4px var(--glow), 0 0 120px 20px var(--glow);
+  animation: seam-flare 1.15s cubic-bezier(0.3, 0, 0.3, 1) 0.12s forwards;
+}
+
+@keyframes seam-flare {
+  0%   { opacity: 1; transform: scaleX(1); filter: blur(0); }
+  38%  { opacity: 0.9; transform: scaleX(10); filter: blur(3px); }
+  100% { opacity: 0; transform: scaleX(34); filter: blur(16px); }
+}
+
 .intro.is-done { display: none; }
 
 .intro__content {
@@ -214,12 +277,13 @@ button { font: inherit; cursor: pointer; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: opacity 0.55s ease, transform 0.55s ease;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.55, 0, 0.55, 0.2);
 }
 
+.intro.is-opening .intro__content,
 .intro.is-open .intro__content {
   opacity: 0;
-  transform: translateY(-16px);
+  transform: translateY(-20px) scale(0.985);
   pointer-events: none;
 }
 
@@ -328,7 +392,7 @@ button { font: inherit; cursor: pointer; }
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  transition: color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  transition: color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
 }
 
 .intro__open::after {
@@ -347,6 +411,7 @@ button { font: inherit; cursor: pointer; }
   color: var(--on-gold);
   background: var(--gold);
   box-shadow: 0 0 34px var(--glow);
+  transform: translateY(-1px);
 }
 
 @keyframes sheen {
@@ -410,6 +475,29 @@ button { font: inherit; cursor: pointer; }
 }
 
 .ornament svg { width: 100%; height: auto; }
+
+/* The welcome ornament draws itself in as the section is revealed. */
+.welcome.reveal .ornament line {
+  stroke-dasharray: 82;
+  stroke-dashoffset: 82;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+}
+
+.welcome.reveal .ornament line:nth-of-type(2) { transition-delay: 0.52s; }
+
+.welcome.reveal.is-in .ornament line { stroke-dashoffset: 0; }
+
+.welcome.reveal .ornament rect {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.3);
+  transform-origin: 100px 10px;
+  transition: opacity 0.5s ease 0.88s, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.88s;
+}
+
+.welcome.reveal.is-in .ornament rect {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
 
 /* ============ Hero ============ */
 
@@ -482,9 +570,20 @@ button { font: inherit; cursor: pointer; }
 .hero__corner--bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; }
 .hero__corner--br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
 
+/* The frame etches itself in after the date, corners snapping on last. */
+body.intro-done .hero__frame {
+  opacity: 0;
+  animation: frame-in 1.3s ease 2.15s both;
+}
+
+@keyframes frame-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 body.intro-done .hero__corner {
   opacity: 0;
-  animation: corner-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.55s both;
+  animation: corner-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 2.6s both;
 }
 
 @keyframes corner-in {
@@ -617,6 +716,36 @@ body.intro-done .ltr {
   flex: none;
 }
 
+/* The gold rule draws outward from its centre diamond (after the names). */
+body.intro-done .hero__rule span {
+  transform: scaleX(0);
+  animation: rule-draw 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+body.intro-done .hero__rule span:first-child {
+  transform-origin: right center;
+  animation-delay: 1.62s;
+}
+
+body.intro-done .hero__rule span:last-child {
+  transform-origin: left center;
+  animation-delay: 1.74s;
+}
+
+body.intro-done .hero__rule i {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.3);
+  animation: gem-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 1.55s forwards;
+}
+
+@keyframes rule-draw {
+  to { transform: scaleX(1); }
+}
+
+@keyframes gem-in {
+  to { opacity: 1; transform: rotate(45deg) scale(1); }
+}
+
 .hero__date {
   margin: 0;
   font-family: var(--font-sans);
@@ -654,6 +783,12 @@ body.intro-done .ltr {
 
 .hero__scroll svg { width: 16px; height: 16px; }
 
+.hero__scroll.is-hidden {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
 @keyframes cue-pulse {
   0%, 100% { opacity: 0.45; transform: translate(-50%, 0); }
   50%      { opacity: 1; transform: translate(-50%, 5px); }
@@ -667,7 +802,12 @@ section, .custom__section {
   text-align: center;
 }
 
-section + section { border-top: 1px solid var(--line-faint); }
+/* Hairlines that dissolve toward the edges instead of stopping hard. */
+section + section,
+.custom__section,
+.footer {
+  border-image: linear-gradient(90deg, transparent, var(--line-faint) 20%, var(--line-faint) 80%, transparent) 1;
+}
 
 .band--deep { background: var(--bg-deep); }
 
@@ -806,6 +946,20 @@ body.reduced .story__rail { transform: none; }
 
 .chapter:last-child { padding-bottom: 4px; }
 
+/* A soft pool of light behind whichever chapter is being read. */
+.chapter::before {
+  content: "";
+  position: absolute;
+  inset: -14px -18px;
+  background: radial-gradient(58% 72% at 50% 32%, var(--glow), transparent 74%);
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.chapter.is-active::before { opacity: 1; }
+
 .chapter__dot {
   position: absolute;
   top: 7px;
@@ -815,12 +969,17 @@ body.reduced .story__rail { transform: none; }
   transform: rotate(45deg);
   border: 1px solid var(--gold);
   background: var(--bg);
-  transition: background 0.5s ease, box-shadow 0.5s ease;
+  transition: background 0.5s ease, box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .chapter.is-in .chapter__dot {
   background: var(--gold);
   box-shadow: 0 0 14px var(--glow), 0 0 4px var(--gold);
+}
+
+.chapter.is-active .chapter__dot {
+  box-shadow: 0 0 20px var(--glow), 0 0 6px var(--gold);
+  transform: rotate(45deg) scale(1.3);
 }
 
 .chapter__label {
@@ -831,6 +990,12 @@ body.reduced .story__rail { transform: none; }
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--gold);
+  transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+
+.chapter.is-active .chapter__label {
+  color: var(--gold-soft);
+  text-shadow: 0 0 16px var(--glow);
 }
 
 .chapter__title {
@@ -865,6 +1030,7 @@ body.reduced .story__rail { transform: none; }
   background: var(--panel);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-card);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .event-card::before {
@@ -876,6 +1042,21 @@ body.reduced .story__rail { transform: none; }
   width: 64px;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .event-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+    box-shadow: var(--shadow-card), 0 0 34px var(--glow);
+  }
+  .event-card:hover::before { width: 132px; }
+}
+
+.event-card:focus-within {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-card), 0 0 26px var(--glow);
 }
 
 .event-card__tag {
@@ -975,7 +1156,7 @@ body.reduced .story__rail { transform: none; }
   letter-spacing: 0.22em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .link-btn:hover {
@@ -983,7 +1164,16 @@ body.reduced .story__rail { transform: none; }
   border-color: var(--gold);
   color: var(--on-gold);
   box-shadow: 0 0 26px var(--glow);
+  transform: translateY(-1px);
 }
+
+.link-btn__arrow {
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.link-btn:hover .link-btn__arrow,
+.link-btn:focus-visible .link-btn__arrow { transform: translate(2px, -2px); }
 
 .link-btn--calendar { border-style: dashed; }
 
@@ -996,6 +1186,7 @@ body.reduced .story__rail { transform: none; }
   gap: 10px;
   max-width: 560px;
   margin: 40px auto 0;
+  counter-reset: plate;
 }
 
 .g-photo {
@@ -1006,6 +1197,7 @@ body.reduced .story__rail { transform: none; }
   overflow: hidden;
   aspect-ratio: 1 / 1;
   cursor: zoom-in;
+  counter-increment: plate;
 }
 
 .g-photo--wide { grid-column: span 2; aspect-ratio: 2 / 1; }
@@ -1019,10 +1211,48 @@ body.reduced .story__rail { transform: none; }
   transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.7s ease;
 }
 
+/* Presentation mat: an inner keyline and soft vignette present the
+   artwork deliberately — like a gallery plate — until the couple's
+   photographs are dropped in. */
+.g-photo::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  z-index: 2;
+  border: 1px solid var(--line-faint);
+  box-shadow: inset 0 0 36px rgba(4, 4, 8, 0.45);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+  pointer-events: none;
+}
+
+/* Roman-numeral plate number, top right. */
+.g-photo::after {
+  content: counter(plate, upper-roman);
+  position: absolute;
+  top: 13px;
+  right: 14px;
+  z-index: 2;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--gold-soft);
+  opacity: 0.62;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
 @media (hover: hover) {
   .g-photo img { filter: saturate(0.55) contrast(1.04); }
   .g-photo:hover img,
   .g-photo:focus-visible img { filter: saturate(1); transform: scale(1.09); }
+  .g-photo:hover::before,
+  .g-photo:focus-visible::before {
+    border-color: var(--line);
+    box-shadow: inset 0 0 24px rgba(4, 4, 8, 0.3);
+  }
+  .g-photo:hover::after,
+  .g-photo:focus-visible::after { opacity: 1; }
 }
 
 .g-photo__cap {
@@ -1030,6 +1260,7 @@ body.reduced .story__rail { transform: none; }
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 3;
   padding: 26px 12px 10px;
   font-family: var(--font-sans);
   font-size: 10.5px;
@@ -1367,6 +1598,13 @@ select.field__input {
   border-color: var(--gold);
   background: var(--glow);
   box-shadow: 0 0 20px var(--glow);
+  animation: pill-pop 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes pill-pop {
+  0%   { transform: scale(0.96); }
+  55%  { transform: scale(1.025); }
+  100% { transform: scale(1); }
 }
 
 .rsvp__submit {
@@ -1391,6 +1629,25 @@ select.field__input {
 .rsvp__submit:active { transform: translateY(1px); }
 .rsvp__submit:disabled { opacity: 0.6; cursor: wait; }
 
+.rsvp__submit-label { transition: opacity 0.25s ease; }
+
+/* While the RSVP posts, the button becomes a sealing wax spinner. */
+.rsvp__submit.is-sending .rsvp__submit-label { opacity: 0; }
+
+.rsvp__submit.is-sending::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  border: 2px solid rgba(23, 18, 7, 0.28);
+  border-top-color: var(--on-gold);
+  animation: spin 0.8s linear infinite;
+}
+
 .rsvp__submit::after {
   content: "";
   position: absolute;
@@ -1406,6 +1663,29 @@ select.field__input {
 .rsvp__done {
   padding: 10px 0 4px;
   text-align: center;
+  animation: done-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes done-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* The acceptance seal draws itself — circle first, then the check. */
+.rsvp__done svg circle {
+  stroke-dasharray: 170;
+  stroke-dashoffset: 170;
+  animation: draw-stroke 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.25s forwards;
+}
+
+.rsvp__done svg path {
+  stroke-dasharray: 42;
+  stroke-dashoffset: 42;
+  animation: draw-stroke 0.5s ease 0.85s forwards;
+}
+
+@keyframes draw-stroke {
+  to { stroke-dashoffset: 0; }
 }
 
 .rsvp__done svg {
@@ -1444,6 +1724,18 @@ select.field__input {
 }
 
 .footer__inner { position: relative; }
+
+/* When the closing section scrolls into view, the monogram presses in
+   like a wax seal. */
+.footer__inner.is-in .footer__monogram {
+  animation: seal-stamp 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s both;
+}
+
+@keyframes seal-stamp {
+  0%   { opacity: 0; transform: rotate(45deg) scale(1.5); }
+  62%  { opacity: 1; transform: rotate(45deg) scale(0.94); }
+  100% { opacity: 1; transform: rotate(45deg) scale(1); }
+}
 
 .footer__monogram {
   width: 64px;
@@ -1498,7 +1790,7 @@ select.field__input {
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .share-btn svg { width: 16px; height: 16px; }
@@ -1507,6 +1799,7 @@ select.field__input {
   background: var(--gold);
   color: var(--on-gold);
   box-shadow: 0 0 30px var(--glow);
+  transform: translateY(-1px);
 }
 
 .footer__hashtag {
@@ -1718,24 +2011,56 @@ select.field__input {
 
 .reveal.is-in { opacity: 1; transform: none; }
 
+/* Variation on the shared entrance: small cards rise a little less,
+   gallery plates settle with a faint scale, and — on desktop — story
+   chapters drift in from their own side of the rail. */
+.c-card.reveal,
+.faq__item.reveal { transform: translateY(16px); }
+
+.g-photo.reveal { transform: translateY(14px) scale(0.985); }
+
+@media (min-width: 960px) {
+  .chapter.reveal:nth-child(odd) { transform: translate(-16px, 22px); }
+  .chapter.reveal:nth-child(even) { transform: translate(16px, 22px); }
+}
+
 body.reduced .progress { display: none; }
 
 /* ============ Reduced motion ============ */
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  html { scroll-behavior: auto; }
-  .dust { display: none; }
-  .ltr { opacity: 1; transform: none; filter: none; }
-  body.intro-done .ltr { animation: none; }
-  .reveal { opacity: 1; transform: none; }
+/* ============ Reduced motion (opt-in) ============
+   Motion plays for everyone by default. When INVITE_CONFIG.motion is
+   "honor", script.js tags <html class="motion-reduced"> for guests whose
+   device asks for reduced motion — these rules give them a still,
+   instant version with nothing left hidden or half-drawn. */
+
+html.motion-reduced *,
+html.motion-reduced *::before,
+html.motion-reduced *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }
+html.motion-reduced { scroll-behavior: auto; }
+html.motion-reduced .dust { display: none; }
+html.motion-reduced .ltr { opacity: 1; transform: none; filter: none; }
+html.motion-reduced body.intro-done .ltr { animation: none; }
+html.motion-reduced .reveal { opacity: 1; transform: none; }
+
+html.motion-reduced body.intro-done .hero__inner > *,
+html.motion-reduced body.intro-done .hero__amp { animation: none !important; opacity: 1; transform: none; }
+html.motion-reduced body.intro-done .hero__frame,
+html.motion-reduced body.intro-done .hero__corner { animation: none !important; opacity: 1; }
+html.motion-reduced body.intro-done .hero__rule span { animation: none !important; transform: none; }
+html.motion-reduced body.intro-done .hero__rule i { animation: none !important; opacity: 1; transform: rotate(45deg); }
+html.motion-reduced .hero__scroll { animation: none !important; opacity: 0.85; }
+html.motion-reduced .welcome .ornament line { stroke-dashoffset: 0 !important; transition: none !important; }
+html.motion-reduced .welcome .ornament rect { opacity: 1 !important; transform: rotate(45deg) !important; transition: none !important; }
+html.motion-reduced .rsvp__done { animation: none !important; }
+html.motion-reduced .rsvp__done svg circle,
+html.motion-reduced .rsvp__done svg path { animation: none !important; stroke-dashoffset: 0; }
+html.motion-reduced .footer__inner.is-in .footer__monogram { animation: none !important; opacity: 1; transform: rotate(45deg); }
+html.motion-reduced .chapter::before { transition: none !important; }
 
 /* ============ Desktop ============ */
 
@@ -1797,7 +2122,7 @@ body.reduced .progress { display: none; }
   /* — Gallery: mosaic — */
   .gallery__grid {
     max-width: none;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 14px;
   }
 
