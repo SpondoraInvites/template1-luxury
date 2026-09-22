@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.35" r="0.65">
+      <stop offset="0" stop-color="#d4b678" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#d4b678" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141419"/>
+      <stop offset="1" stop-color="#0c0c10"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#glow)"/>
+  <rect x="46" y="46" width="1508" height="908" fill="none" stroke="#d4b678" stroke-opacity="0.45" stroke-width="2"/>
+  <rect x="64" y="64" width="1472" height="872" fill="none" stroke="#d4b678" stroke-opacity="0.22" stroke-width="1"/>
+  <g fill="none" stroke="#d4b678" stroke-width="4" stroke-linecap="round">
+    <path d="M800 130 C950 130 1050 230 1050 380 L1050 760 C1050 790 1028 812 998 812 L602 812 C572 812 550 790 550 760 L550 380 C550 230 650 130 800 130 Z"/>
+    <path d="M610 180 L610 770" stroke-opacity="0.4" stroke-width="2"/>
+    <path d="M990 180 L990 770" stroke-opacity="0.4" stroke-width="2"/>
+    <path d="M550 420 L1050 420" stroke-opacity="0.4" stroke-width="2"/>
+    <path d="M550 660 L1050 660" stroke-opacity="0.4" stroke-width="2"/>
+    <path d="M800 130 V812" stroke-opacity="0.3" stroke-width="2"/>
+    <path d="M560 850 L1040 850"/>
+  </g>
+  <g stroke="#d4b678" stroke-width="1.6" fill="none" stroke-linecap="round">
+    <path d="M640 300 v54" stroke-dasharray="2 10"/>
+    <path d="M960 300 v54" stroke-dasharray="2 10"/>
+    <path d="M800 240 v70" stroke-dasharray="2 10"/>
+  </g>
+  <g fill="#d4b678">
+    <path d="M640 354 l9 22 22 9 -22 9 -9 22 -9 -22 -22 -9 22 -9 Z"/>
+    <path d="M960 354 l9 22 22 9 -22 9 -9 22 -9 -22 -22 -9 22 -9 Z"/>
+    <path d="M800 310 l11 26 26 11 -26 11 -11 26 -11 -26 -26 -11 26 -11 Z"/>
+    <path d="M700 560 l8 19 19 8 -19 8 -8 19 -8 -19 -19 -8 19 -8 Z" fill-opacity="0.8"/>
+    <path d="M900 560 l8 19 19 8 -19 8 -8 19 -8 -19 -19 -8 19 -8 Z" fill-opacity="0.8"/>
+    <circle cx="800" cy="600" r="5"/>
+  </g>
+  <text x="800" y="906" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" fill="#a29a89" letter-spacing="4">placeholder &#183; replace with couple photo</text>
+</svg>

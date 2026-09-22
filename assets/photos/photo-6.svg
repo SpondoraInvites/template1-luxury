@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#d4b678" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#d4b678" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141419"/>
+      <stop offset="1" stop-color="#0c0c10"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <rect width="1200" height="1200" fill="url(#glow)"/>
+  <rect x="46" y="46" width="1108" height="1108" fill="none" stroke="#d4b678" stroke-opacity="0.45" stroke-width="2"/>
+  <rect x="64" y="64" width="1072" height="1072" fill="none" stroke="#d4b678" stroke-opacity="0.22" stroke-width="1"/>
+  <g fill="none" stroke="#d4b678" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M600 960 C580 800 575 620 600 260"/>
+    <path d="M600 860 C490 838 428 762 412 678 C506 694 580 756 600 860 Z"/>
+    <path d="M600 860 C710 838 772 762 788 678 C694 694 620 756 600 860 Z"/>
+    <path d="M596 700 C500 680 448 614 436 542 C516 558 578 612 596 700 Z"/>
+    <path d="M604 700 C700 680 752 614 764 542 C684 558 622 612 604 700 Z"/>
+    <path d="M594 540 C510 522 466 464 456 400 C526 414 580 462 594 540 Z"/>
+    <path d="M606 540 C690 522 734 464 744 400 C674 414 620 462 606 540 Z"/>
+    <path d="M592 390 C520 374 482 324 474 268 C534 280 580 322 592 390 Z"/>
+    <path d="M608 390 C680 374 718 324 726 268 C666 280 620 322 608 390 Z"/>
+  </g>
+  <circle cx="600" cy="244" r="7" fill="#d4b678"/>
+  <g fill="#d4b678">
+    <path d="M380 420 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 Z" fill-opacity="0.8"/>
+    <path d="M830 560 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 Z" fill-opacity="0.8"/>
+    <circle cx="856" cy="300" r="3.4"/>
+    <circle cx="352" cy="640" r="3"/>
+  </g>
+  <text x="600" y="1078" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" fill="#a29a89" letter-spacing="4">placeholder &#183; replace with couple photo</text>
+</svg>

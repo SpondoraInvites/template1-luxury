@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="noir">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tasnia &amp; Farhan — Wedding Invitation</title>
+  <meta name="description" content="With the blessings of Almighty Allah, we joyfully invite you to the wedding of Tasnia & Farhan — 18–20 March 2027, Dhaka." />
+
+  <!-- Social sharing (update per client) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Tasnia &amp; Farhan — Wedding Invitation" />
+  <meta property="og:description" content="Join us as we celebrate — 18–20 March 2027, Dhaka." />
+  <meta name="theme-color" content="#0a0a0e" />
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+  <!-- Default type set. Any font picked in config.js loads on demand. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&family=Montserrat:wght@300;400;500;600&family=Noto+Serif+Bengali:wght@400;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============ CINEMATIC OPENING ============ -->
+  <div class="intro" id="intro">
+    <div class="intro__veil intro__veil--l" aria-hidden="true"></div>
+    <div class="intro__veil intro__veil--r" aria-hidden="true"></div>
+
+    <div class="intro__content">
+      <p class="blessing" data-blessing>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+
+      <div class="intro__ring" aria-hidden="true">
+        <svg viewBox="0 0 160 160" fill="none">
+          <circle class="intro__ring-track" cx="80" cy="80" r="74" />
+          <circle class="intro__ring-arc" id="introArc" cx="80" cy="80" r="74" />
+          <circle class="intro__ring-track" cx="80" cy="80" r="66" stroke-width="0.75" />
+        </svg>
+        <span class="intro__initials" data-initials>T&amp;F</span>
+      </div>
+
+      <p class="intro__eyebrow" data-intro-eyebrow>You are cordially invited to</p>
+      <h1 class="intro__names">
+        <span data-name1>Tasnia Haque</span>
+        <span class="intro__amp" aria-hidden="true">&amp;</span>
+        <span data-name2>Farhan Malik</span>
+      </h1>
+      <p class="intro__line" data-intro-line>a celebration of love, light &amp; forever</p>
+
+      <button class="intro__open" id="introOpen" type="button" data-intro-enter>Open the Invitation</button>
+    </div>
+  </div>
+  <noscript><style>.intro { display: none; }</style></noscript>
+
+  <!-- ============ FILM GRAIN + SCROLL PROGRESS ============ -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <main class="invite" id="invite">
+
+    <!-- ============ HERO ============ -->
+    <header class="hero" id="top">
+      <div class="hero__vignette" aria-hidden="true"></div>
+      <div class="hero__dust" id="heroDust" aria-hidden="true"></div>
+
+      <div class="hero__frame" aria-hidden="true">
+        <span class="hero__corner hero__corner--tl"></span>
+        <span class="hero__corner hero__corner--tr"></span>
+        <span class="hero__corner hero__corner--bl"></span>
+        <span class="hero__corner hero__corner--br"></span>
+      </div>
+
+      <div class="hero__inner">
+        <p class="blessing" data-blessing>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+
+        <div class="seal" aria-hidden="true">
+          <span class="seal__initials" data-initials>T&amp;F</span>
+        </div>
+
+        <p class="eyebrow eyebrow--light" data-hero-eyebrow>The Wedding of</p>
+
+        <h1 class="hero__names">
+          <span class="hero__name" data-name1>Tasnia Haque</span>
+          <span class="hero__amp" aria-hidden="true">&amp;</span>
+          <span class="hero__name" data-name2>Farhan Malik</span>
+        </h1>
+
+        <div class="hero__rule" aria-hidden="true">
+          <span></span><i></i><span></span>
+        </div>
+
+        <p class="hero__date">
+          <span data-date-display>Friday, 19 March 2027</span>
+        </p>
+        <p class="hero__place" data-city>Dhaka, Bangladesh</p>
+      </div>
+
+      <div class="hero__scroll" aria-hidden="true">
+        <span>Scroll</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9 l6 6 l6 -6" />
+        </svg>
+      </div>
+    </header>
+
+    <!-- ============ WELCOME / FAMILIES ============ -->
+    <section class="welcome">
+      <div class="ornament" aria-hidden="true">
+        <svg viewBox="0 0 200 20" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+          <line x1="0" y1="10" x2="80" y2="10" />
+          <line x1="120" y1="10" x2="200" y2="10" />
+          <rect x="96" y="6" width="8" height="8" transform="rotate(45 100 10)" />
+        </svg>
+      </div>
+
+      <p class="eyebrow" data-welcome-eyebrow>Together with their families</p>
+
+      <div class="welcome__families">
+        <p class="welcome__parents" data-parents1>Daughter of Mr. Iqbal Haque &amp; Mrs. Nasrin Haque</p>
+        <span class="welcome__divider" aria-hidden="true"></span>
+        <p class="welcome__parents" data-parents2>Son of Mr. Rashid Malik &amp; Mrs. Farzana Malik</p>
+      </div>
+
+      <p class="welcome__line" data-invite-line>
+        request the honour of your presence at their wedding celebration —
+        three evenings of light, laughter and blessings.
+      </p>
+
+      <p class="welcome__epigraph script" data-epigraph>Some stories are written in ink — ours, in gold.</p>
+    </section>
+
+    <!-- ============ COUNTDOWN ============ -->
+    <section class="countdown" id="countdown">
+      <div class="countdown__panel">
+        <p class="eyebrow eyebrow--gold">Save the Date</p>
+        <h2 class="section-title">Counting Down<br /><em>to Forever</em></h2>
+
+        <div class="countdown__grid" role="timer" aria-label="Countdown to the wedding">
+          <div class="countdown__cell">
+            <span class="countdown__num" id="cdDays">—</span>
+            <span class="countdown__label">Days</span>
+          </div>
+          <div class="countdown__cell">
+            <span class="countdown__num" id="cdHours">—</span>
+            <span class="countdown__label">Hours</span>
+          </div>
+          <div class="countdown__cell">
+            <span class="countdown__num" id="cdMinutes">—</span>
+            <span class="countdown__label">Minutes</span>
+          </div>
+          <div class="countdown__cell">
+            <span class="countdown__num" id="cdSeconds">—</span>
+            <span class="countdown__label">Seconds</span>
+          </div>
+        </div>
+
+        <p class="countdown__note" data-countdown-note>until the curtain rises on forever — In Shaa Allah</p>
+      </div>
+    </section>
+
+    <!-- ============ OUR STORY ============ -->
+    <section class="story" id="story">
+      <p class="eyebrow eyebrow--gold">How It Began</p>
+      <h2 class="section-title">Our <em>Story</em></h2>
+
+      <div class="story__timeline" id="storyList">
+        <span class="story__rail" id="storyRail" aria-hidden="true"></span>
+        <!-- Timeline chapters rendered from config.js -->
+        <article class="chapter">
+          <span class="chapter__dot" aria-hidden="true"></span>
+          <p class="chapter__label">Scene One · 2021</p>
+          <h3 class="chapter__title">A Wedding Brought Us</h3>
+          <p class="chapter__text">A friend's nikah in Chattogram, a crowded hall, and one conversation by the sea that refused to end.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ EVENTS ============ -->
+    <section class="events" id="events">
+      <p class="eyebrow eyebrow--gold">When &amp; Where</p>
+      <h2 class="section-title">Three Evenings of <em>Light</em></h2>
+
+      <div class="events__list" id="eventList">
+        <!-- Event cards rendered from config.js -->
+        <article class="event-card">
+          <p class="event-card__tag">Wedding Day</p>
+          <h3 class="event-card__name">Akd Ceremony</h3>
+          <p class="event-card__tagline">the blessed union, followed by dinner</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section class="gallery" id="gallery">
+      <p class="eyebrow eyebrow--gold">Captured Moments</p>
+      <h2 class="section-title">Our <em>Gallery</em></h2>
+
+      <div class="gallery__grid" id="galleryGrid">
+        <!-- Photo tiles rendered from config.js -->
+      </div>
+      <p class="gallery__hint">Tap a photo to view it close-up</p>
+    </section>
+
+    <!-- ============ CUSTOM SECTIONS (from config.js) ============ -->
+    <div class="custom" id="customSections">
+      <!-- Quote bands, text, card grids and FAQs — whatever the client dreams up -->
+    </div>
+
+    <!-- ============ MAP ============ -->
+    <section class="venue" id="venue">
+      <div class="venue__split">
+        <div class="venue__info">
+          <p class="eyebrow eyebrow--gold">The Venue</p>
+          <h2 class="section-title">Find Us <em>There</em></h2>
+
+          <p class="venue__name" data-venue-name>Grand Ballroom, The Westin Dhaka</p>
+          <p class="venue__address" data-venue-address>Main Gulshan Avenue, Road 45, Gulshan 2, Dhaka 1212</p>
+          <a class="link-btn venue__directions" data-directions href="https://www.google.com/maps/search/?api=1&query=The+Westin+Dhaka" target="_blank" rel="noopener">Open in Google Maps ↗</a>
+        </div>
+
+        <div class="venue__frame">
+          <iframe
+            id="venueMap"
+            title="Map to the wedding venue"
+            src="https://maps.google.com/maps?q=The%20Westin%20Dhaka&z=15&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RSVP ============ -->
+    <section class="rsvp" id="rsvp">
+      <div class="rsvp__panel">
+        <p class="eyebrow eyebrow--light">Will You Join Us?</p>
+        <h2 class="section-title">Kindly <em>Respond</em></h2>
+        <p class="rsvp__note" data-rsvp-note>Kindly respond by 1 March 2027 — the ballroom awaits your name.</p>
+
+        <form class="rsvp__form" id="rsvpForm" novalidate>
+          <div class="field">
+            <label class="field__label" for="rsvpName">Your Name</label>
+            <input class="field__input" type="text" id="rsvpName" name="name" autocomplete="name" placeholder="e.g. Rahim Uddin &amp; family" required />
+          </div>
+
+          <fieldset class="field field--choice">
+            <legend class="field__label">Will you be attending?</legend>
+            <div class="choice">
+              <label class="choice__opt">
+                <input type="radio" name="attending" value="yes" checked />
+                <span>Joyfully, yes</span>
+              </label>
+              <label class="choice__opt">
+                <input type="radio" name="attending" value="no" />
+                <span>Regretfully, no</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="field" id="rsvpGuestsWrap">
+            <label class="field__label" for="rsvpGuests">Number of Guests</label>
+            <select class="field__input" id="rsvpGuests" name="guests">
+              <option value="1">1 guest</option>
+              <option value="2" selected>2 guests</option>
+              <option value="3">3 guests</option>
+              <option value="4">4 guests</option>
+              <option value="5">5 guests</option>
+              <option value="6">6+ guests</option>
+            </select>
+          </div>
+
+          <fieldset class="field field--choice" id="rsvpEventsWrap">
+            <legend class="field__label">Which events will you attend?</legend>
+            <div class="choice" id="rsvpEvents">
+              <!-- Event checkboxes rendered from config.js -->
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label class="field__label" for="rsvpMessage">A Message for the Couple <span class="field__optional">(optional)</span></label>
+            <textarea class="field__input field__input--area" id="rsvpMessage" name="message" rows="3" placeholder="Your wishes, duas &amp; blessings…"></textarea>
+          </div>
+
+          <button class="rsvp__submit" id="rsvpSubmit" type="submit">
+            <span class="rsvp__submit-label">Send RSVP</span>
+          </button>
+        </form>
+
+        <div class="rsvp__done" id="rsvpDone" hidden>
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="32" cy="32" r="27" />
+            <path d="M20 33 l8.5 8.5 L44 25" />
+          </svg>
+          <p class="rsvp__done-note" data-rsvp-success>JazakAllah Khair! Your seat is being saved — we can't wait to celebrate with you.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="footer__glow" aria-hidden="true"></div>
+
+      <div class="footer__inner">
+        <div class="footer__monogram" aria-hidden="true">
+          <span class="seal__initials" data-initials>T&amp;F</span>
+        </div>
+
+        <p class="footer__closing" data-closing>With love and prayers, we await your presence</p>
+        <p class="footer__names" data-footer-names>Tasnia &amp; Farhan</p>
+        <p class="footer__date" data-footer-date>19 · 03 · 2027 · Dhaka</p>
+
+        <button class="share-btn" id="shareBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6" cy="12" r="2.6" />
+            <circle cx="18" cy="6" r="2.6" />
+            <circle cx="18" cy="18" r="2.6" />
+            <line x1="8.3" y1="10.8" x2="15.7" y2="7.2" />
+            <line x1="8.3" y1="13.2" x2="15.7" y2="16.8" />
+          </svg>
+          Share this Invitation
+        </button>
+
+        <p class="footer__hashtag" data-hashtag>#TasniaAndFarhan</p>
+        <p class="footer__credit" data-credit>Crafted with ♥ — Your Studio Name</p>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Floating music player -->
+  <button class="music-btn" id="musicBtn" type="button" aria-label="Play background music" aria-pressed="false" hidden>
+    <svg class="music-btn__disc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="2.4" />
+      <path d="M12 3 v2.2 M12 18.8 V21 M3 12 h2.2 M18.8 12 H21" />
+    </svg>
+    <span class="music-btn__bars" aria-hidden="true">
+      <i></i><i></i><i></i>
+    </span>
+  </button>
+
+  <!-- Floating share pill -->
+  <button class="share-fab" id="shareFab" type="button" aria-label="Share this invitation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="12" r="2.6" />
+      <circle cx="18" cy="6" r="2.6" />
+      <circle cx="18" cy="18" r="2.6" />
+      <line x1="8.3" y1="10.8" x2="15.7" y2="7.2" />
+      <line x1="8.3" y1="13.2" x2="15.7" y2="16.8" />
+    </svg>
+    <span>Share</span>
+  </button>
+
+  <!-- Photo lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+    <button class="lightbox__close" id="lbClose" type="button" aria-label="Close photo viewer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6 l12 12 M18 6 l-12 12"/></svg>
+    </button>
+    <figure class="lightbox__stage">
+      <img class="lightbox__img" id="lbImg" src="" alt="" />
+      <figcaption class="lightbox__caption">
+        <span id="lbCaption"></span>
+        <span id="lbCount"></span>
+      </figcaption>
+    </figure>
+    <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" type="button" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 l-7 7 7 7"/></svg>
+    </button>
+    <button class="lightbox__nav lightbox__nav--next" id="lbNext" type="button" aria-label="Next photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5 l7 7 -7 7"/></svg>
+    </button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Link copied to clipboard</div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

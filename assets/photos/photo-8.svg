@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#d4b678" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#d4b678" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141419"/>
+      <stop offset="1" stop-color="#0c0c10"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <rect width="1200" height="1200" fill="url(#glow)"/>
+  <rect x="46" y="46" width="1108" height="1108" fill="none" stroke="#d4b678" stroke-opacity="0.45" stroke-width="2"/>
+  <rect x="64" y="64" width="1072" height="1072" fill="none" stroke="#d4b678" stroke-opacity="0.22" stroke-width="1"/>
+  <g fill="none" stroke="#d4b678" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M600 210 C760 240 850 360 850 500 C850 590 810 660 750 706 C700 744 672 800 672 860 H528 C528 800 500 744 450 706 C390 660 350 590 350 500 C350 360 440 240 600 210 Z"/>
+    <path d="M528 860 C528 930 556 970 600 990 C644 970 672 930 672 860"/>
+    <path d="M600 210 V150"/>
+    <path d="M600 330 C500 350 450 420 450 500"/>
+    <path d="M600 330 C700 350 750 420 750 500"/>
+    <path d="M600 470 C540 486 508 528 508 580 C508 632 544 668 600 682 C656 668 692 632 692 580 C692 528 660 486 600 470 Z"/>
+    <path d="M600 530 V630" stroke-width="2.4"/>
+    <path d="M560 560 Q600 580 640 560" stroke-width="2.4"/>
+    <path d="M470 730 Q600 782 730 730" stroke-opacity="0.5" stroke-width="2"/>
+    <path d="M452 790 Q600 846 748 790" stroke-opacity="0.35" stroke-width="2"/>
+  </g>
+  <g fill="#d4b678">
+    <circle cx="600" cy="142" r="6"/>
+    <path d="M600 900 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10 Z" fill-opacity="0.85"/>
+    <path d="M400 380 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 Z" fill-opacity="0.7"/>
+    <path d="M806 420 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 Z" fill-opacity="0.7"/>
+    <circle cx="330" cy="560" r="3.4"/>
+    <circle cx="876" cy="600" r="3.4"/>
+  </g>
+  <text x="600" y="1078" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" fill="#a29a89" letter-spacing="4">placeholder &#183; replace with couple photo</text>
+</svg>

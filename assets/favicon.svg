@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0a0a0e"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#d4b678" stroke-width="1.6"/>
+  <circle cx="32" cy="32" r="21" fill="none" stroke="#d4b678" stroke-opacity="0.4" stroke-width="0.8"/>
+  <path d="M32 12 l2.6 4.8 -2.6 -1.3 -2.6 1.3 Z" fill="#d4b678"/>
+  <text x="32" y="38.5" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#ead9ab" letter-spacing="1">T&#38;F</text>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#d4b678" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#d4b678" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141419"/>
+      <stop offset="1" stop-color="#0c0c10"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <rect width="1200" height="1200" fill="url(#glow)"/>
+  <rect x="46" y="46" width="1108" height="1108" fill="none" stroke="#d4b678" stroke-opacity="0.45" stroke-width="2"/>
+  <rect x="64" y="64" width="1072" height="1072" fill="none" stroke="#d4b678" stroke-opacity="0.22" stroke-width="1"/>
+  <g fill="none" stroke="#d4b678" stroke-width="5" stroke-linecap="round">
+    <circle cx="540" cy="580" r="120"/>
+    <circle cx="660" cy="580" r="120"/>
+    <path d="M425 748 C505 796 695 796 775 748"/>
+    <path d="M600 250 L600 448" stroke-dasharray="2 12"/>
+  </g>
+  <text x="600" y="410" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#ead9ab" letter-spacing="8">T &#38; F</text>
+  <g fill="#d4b678">
+    <circle cx="384" cy="360" r="3.4"/>
+    <circle cx="828" cy="330" r="2.6"/>
+    <circle cx="872" cy="640" r="3"/>
+    <circle cx="336" cy="660" r="2.4"/>
+    <path d="M600 830 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 Z"/>
+  </g>
+  <text x="600" y="1078" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" fill="#a29a89" letter-spacing="4">placeholder &#183; replace with couple photo</text>
+</svg>

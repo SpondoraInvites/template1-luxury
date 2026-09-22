@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#d4b678" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#d4b678" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141419"/>
+      <stop offset="1" stop-color="#0c0c10"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#glow)"/>
+  <rect x="46" y="46" width="1508" height="908" fill="none" stroke="#d4b678" stroke-opacity="0.45" stroke-width="2"/>
+  <rect x="64" y="64" width="1472" height="872" fill="none" stroke="#d4b678" stroke-opacity="0.22" stroke-width="1"/>
+  <path d="M280 250 Q800 150 1320 250" fill="none" stroke="#d4b678" stroke-opacity="0.5" stroke-width="2"/>
+  <path d="M300 290 Q800 196 1300 290" fill="none" stroke="#d4b678" stroke-opacity="0.3" stroke-width="1.4"/>
+  <g fill="none" stroke="#d4b678" stroke-width="5" stroke-linecap="round">
+    <circle cx="742" cy="520" r="92"/>
+    <circle cx="858" cy="520" r="92"/>
+    <path d="M676 500 C712 474 772 474 808 500" stroke-width="3"/>
+    <path d="M792 500 C828 474 888 474 924 500" stroke-width="3"/>
+  </g>
+  <text x="800" y="700" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="46" fill="#ead9ab" letter-spacing="14">19 &#183; 03 &#183; 2027</text>
+  <text x="800" y="756" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" fill="#a29a89" letter-spacing="6">save the date</text>
+  <g fill="#d4b678">
+    <path d="M520 500 l6 15 15 6 -15 6 -6 15 -6 -15 -15 -6 15 -6 Z"/>
+    <path d="M1084 486 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 Z"/>
+    <circle cx="430" cy="620" r="3"/>
+    <circle cx="1180" cy="600" r="3.4"/>
+    <circle cx="960" cy="330" r="2.6"/>
+    <circle cx="640" cy="330" r="2.6"/>
+  </g>
+  <text x="800" y="884" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" fill="#a29a89" letter-spacing="4">placeholder &#183; replace with couple photo</text>
+</svg>
