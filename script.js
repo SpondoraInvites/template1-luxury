@@ -7,8 +7,8 @@
    3. Cinematic opening                    10. Background music
    4. Hero letter reveal                   11. RSVP form
    5. Story timeline (scroll-drawn rail)   12. Share
-   6. Event cards                          13. FX: dust · parallax ·
-   7. Gallery + lightbox + custom sections     grain · reveals · progress
+   6. Event cards                          13. FX: dust · parallax · grain ·
+   7. Gallery + lightbox + custom sections     comet · traces · flourishes
    ============================================================ */
 (function () {
   "use strict";
@@ -296,9 +296,9 @@
 
   /* ============ 6. Event cards ============ */
   var ICONS = {
-    date: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>',
-    time: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 13.5"/></svg>',
-    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+    date: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path pathLength="1" d="M3 10h18"/><path pathLength="1" d="M8 3v4"/><path pathLength="1" d="M16 3v4"/></svg>',
+    time: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18Z"/><path pathLength="1" d="M12 7v5l3.5 1.5"/></svg>',
+    pin: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><path pathLength="1" d="M9 10a3 3 0 1 0 6 0 3 3 0 1 0-6 0Z"/></svg>',
   };
 
   var list = $("#eventList");
@@ -898,6 +898,15 @@
     var ticking = false;
     var scrollCue = $(".hero__scroll");
 
+    // A bead of light rides the tip of the drawing story rail.
+    var comet = null;
+    if (rail && timeline) {
+      comet = document.createElement("span");
+      comet.className = "rail-comet";
+      comet.setAttribute("aria-hidden", "true");
+      timeline.appendChild(comet);
+    }
+
     function update() {
       ticking = false;
       var y = window.scrollY || 0;
@@ -916,8 +925,13 @@
       // Story rail draws as the guest reads
       if (rail && timeline) {
         var rect = timeline.getBoundingClientRect();
-        var p = (vh * 0.72 - rect.top) / rect.height;
-        rail.style.transform = "scaleY(" + Math.max(0, Math.min(1, p)).toFixed(4) + ")";
+        var p = Math.max(0, Math.min(1, (vh * 0.72 - rect.top) / rect.height));
+        rail.style.transform = "scaleY(" + p.toFixed(4) + ")";
+        if (comet) {
+          // Rail spans top:8 to bottom:8; park the bead on its live tip.
+          comet.style.top = (8 + p * (rect.height - 16) - 3.5).toFixed(1) + "px";
+          comet.classList.toggle("is-on", p > 0.004);
+        }
       }
 
       // Hero parallax — only while the hero is on screen
@@ -937,13 +951,41 @@
   })();
 
   // Staggered reveal-on-scroll.
+
+  /* The signature divider, matching the welcome ornament: two gold
+     strokes parting around a floating diamond. Injected beneath every
+     section title (pathLength="1" keeps the dash maths exact) and
+     hard-coded above the welcome eyebrow. */
+  var FLOURISH =
+    '<svg class="flourish" viewBox="0 0 200 20" aria-hidden="true">' +
+    '<path class="fl__line" pathLength="1" d="M80 10H0"/>' +
+    '<path class="fl__line" pathLength="1" d="M120 10h80"/>' +
+    '<path class="fl__gem" d="M100 4.34 105.66 10 100 15.66 94.34 10Z"/>' +
+    '</svg>';
+
   (function initReveals() {
+    $$(".section-title").forEach(function (t) {
+      if (!t.nextElementSibling || !t.nextElementSibling.classList.contains("flourish")) {
+        t.insertAdjacentHTML("afterend", FLOURISH);
+      }
+    });
+
     var selectors = [
       ".welcome", ".countdown__panel", ".chapter", ".event-card",
       ".g-photo", ".venue__info", ".venue__frame", ".rsvp__panel",
       ".custom__section", ".c-card", ".faq__item", ".footer__inner",
+      ".flourish",
+      ".story .eyebrow", ".story .section-title",
+      ".events .eyebrow", ".events .section-title",
+      ".gallery .eyebrow", ".gallery .section-title",
     ];
     if ("IntersectionObserver" in window && !reduced) {
+      // Measure the etched panels' frames so their borders can draw around.
+      $$(".frame-trace rect").forEach(function (r) {
+        var len = 9999;
+        try { len = Math.ceil(r.getTotalLength()); } catch (e) { /* keep fallback */ }
+        r.style.setProperty("--len", String(len));
+      });
       selectors.forEach(function (sel) {
         $$(sel).forEach(function (el) { el.classList.add("reveal"); });
       });
