@@ -131,7 +131,7 @@ the same kind. Dress-code colour swatches are optional per card.
 ## Running locally
 
 ```bash
-cd template3-luxury
+cd template1-luxury
 python3 -m http.server 8080
 # open http://localhost:8080
 ```

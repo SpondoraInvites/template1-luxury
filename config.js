@@ -280,10 +280,12 @@ const INVITE_CONFIG = {
   ],
 
   /* ---------- Background music ----------
-     Replace assets/music/theme.mp3 with the client's song (mp3, ≤2 MB is
+      Replace assets/music/theme.mp3 with the client's song (mp3, ≤2 MB is
      ideal). "autoplay" starts it on the tap that opens the invitation —
      browsers block silent autoplay, so this is the smoothest allowed
-     behaviour.                                                          */
+     behaviour.
+     The shipped track is the royalty-free "BARAKAH" background nasheed
+     (No Copyright Nasheed / Halal Sounds).                              */
   music: {
     enabled: true,
     src: "assets/music/theme.mp3",
