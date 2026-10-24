@@ -164,6 +164,23 @@
     if (epi) epi.hidden = true;
   }
 
+  // Footer social icons: hrefs come from cfg.social; a fully empty
+  // block hides the icon row (the credit line stays on its own).
+  var socialsWrap = $("[data-socials]");
+  if (socialsWrap) {
+    var socialMap = cfg.social || {};
+    $$("[data-social]", socialsWrap).forEach(function (a) {
+      var url = socialMap[a.getAttribute("data-social")];
+      if (url) {
+        a.setAttribute("href", url);
+        a.hidden = false;
+      } else {
+        a.remove();
+      }
+    });
+    if (!socialsWrap.querySelector("a")) socialsWrap.hidden = true;
+  }
+
   // Document title & social meta follow the couple.
   var title = cfg.couple.name1 + " & " + cfg.couple.name2 + " \u2014 Wedding Invitation";
   document.title = title;

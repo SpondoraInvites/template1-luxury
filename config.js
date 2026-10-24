@@ -313,7 +313,14 @@ const INVITE_CONFIG = {
 
   /* ---------- Closing ---------- */
   closing: "With love and prayers, we await your presence",
-  credit: "Crafted with \u2665 \u2014 Your Studio Name",
+  credit: "Crafted with \u2665 \u2014 Spondora Invites",
+
+  /* ---------- Studio social links (footer) ----------
+     Leave a field "" to hide that icon. */
+  social: {
+    instagram: "https://www.instagram.com/spondora_invites/",
+    facebook: "https://www.facebook.com/profile.php?id=61594435060189",
+  },
 };
 
 /* Export for reuse; safe to ignore in the browser. */
