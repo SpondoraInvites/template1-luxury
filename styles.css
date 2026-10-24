@@ -207,17 +207,18 @@ button { font: inherit; cursor: pointer; }
 .intro__veil--l {
   left: 0;
   --veil-lit: 100%;
-  box-shadow: inset -46px 0 54px -42px rgba(0, 0, 0, 0.92);
 }
 
 .intro__veil--r {
   right: 0;
   --veil-lit: 0%;
-  box-shadow: inset 46px 0 54px -42px rgba(0, 0, 0, 0.92);
   transition-delay: 0.19s; /* the second panel answers the first, a beat later */
 }
 
-/* Gold trim along each panel's leading edge */
+/* Gold trim along each panel's leading edge.
+   Invisible while the invitation is closed — the two edges sit at the
+   screen's centre and would otherwise read as one line crossing the text.
+   They fade in on open, then ride outward with the panels. */
 .intro__veil::after {
   content: "";
   position: absolute;
@@ -227,13 +228,19 @@ button { font: inherit; cursor: pointer; }
   background: linear-gradient(180deg,
     transparent, var(--gold-deep) 14%, var(--gold) 32%,
     var(--gold-soft) 50%, var(--gold) 68%, var(--gold-deep) 86%, transparent);
-  opacity: 0.85;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.25s;
 }
+
+.intro.is-opening .intro__veil::after { opacity: 0.85; }
 
 .intro__veil--l::after { right: 0; }
 .intro__veil--r::after { left: 0; }
 
-/* The seam of light where the closed panels meet */
+/* The seam of light where the closed panels meet.
+   Hidden while the invitation is closed — it otherwise overlaps the
+   intro text and button. It ignites only when the button is pressed,
+   growing from the top just as the panels begin to part. */
 .intro__seam {
   position: absolute;
   top: 0;
@@ -243,13 +250,17 @@ button { font: inherit; cursor: pointer; }
   margin-left: -1px;
   background: linear-gradient(180deg,
     transparent, var(--gold) 12%, var(--gold-soft) 50%, var(--gold) 88%, transparent);
-  opacity: 0.3;
-  transition: opacity 0.55s ease, box-shadow 0.55s ease;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: center top;
+  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.3, 0, 0.2, 1),
+    box-shadow 0.4s ease;
   pointer-events: none;
 }
 
 .intro.is-opening .intro__seam {
   opacity: 1;
+  transform: scaleY(1);
   box-shadow: 0 0 24px 2px var(--glow), 0 0 90px 12px var(--glow);
 }
 
