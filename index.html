@@ -313,16 +313,27 @@
         <p class="footer__names" data-footer-names>Tasnia &amp; Farhan</p>
         <p class="footer__date" data-footer-date>19 · 03 · 2027 · Dhaka</p>
 
-        <button class="share-btn" id="shareBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="6" cy="12" r="2.6" />
-            <circle cx="18" cy="6" r="2.6" />
-            <circle cx="18" cy="18" r="2.6" />
-            <line x1="8.3" y1="10.8" x2="15.7" y2="7.2" />
-            <line x1="8.3" y1="13.2" x2="15.7" y2="16.8" />
-          </svg>
-          Share this Invitation
-        </button>
+        <div class="share">
+          <button class="share-btn" id="shareBtn" type="button" data-share-button aria-expanded="false" aria-controls="share-menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="12" r="2.6" />
+              <circle cx="18" cy="6" r="2.6" />
+              <circle cx="18" cy="18" r="2.6" />
+              <line x1="8.3" y1="10.8" x2="15.7" y2="7.2" />
+              <line x1="8.3" y1="13.2" x2="15.7" y2="16.8" />
+            </svg>
+            Share this Invitation
+          </button>
+
+          <!-- Channel menu — wired by script.js; [hidden] lifts once JS is healthy -->
+          <div class="share-menu" id="share-menu" data-share-menu hidden>
+            <button type="button" data-share="copy">Copy link</button>
+            <button type="button" data-share="whatsapp">WhatsApp</button>
+            <button type="button" data-share="messenger">Messenger</button>
+            <button type="button" data-share="telegram">Telegram</button>
+            <button type="button" data-share="email">Email</button>
+          </div>
+        </div>
 
         <p class="footer__hashtag" data-hashtag>#TasniaAndFarhan</p>
 
@@ -358,17 +369,27 @@
     </span>
   </button>
 
-  <!-- Floating share pill -->
-  <button class="share-fab" id="shareFab" type="button" aria-label="Share this invitation">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="6" cy="12" r="2.6" />
-      <circle cx="18" cy="6" r="2.6" />
-      <circle cx="18" cy="18" r="2.6" />
-      <line x1="8.3" y1="10.8" x2="15.7" y2="7.2" />
-      <line x1="8.3" y1="13.2" x2="15.7" y2="16.8" />
-    </svg>
-    <span>Share</span>
-  </button>
+  <!-- Floating share — menu opens above the pill; appears once the hero scrolls away -->
+  <div class="float-share" id="floatShare">
+    <div class="share-menu share-menu--float" id="share-menu-float" data-share-menu hidden>
+      <button type="button" data-share="copy">Copy link</button>
+      <button type="button" data-share="whatsapp">WhatsApp</button>
+      <button type="button" data-share="messenger">Messenger</button>
+      <button type="button" data-share="telegram">Telegram</button>
+      <button type="button" data-share="email">Email</button>
+    </div>
+
+    <button class="share-fab" id="shareFab" type="button" data-share-button aria-expanded="false" aria-controls="share-menu-float" aria-label="Share this invitation">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="12" r="2.6" />
+        <circle cx="18" cy="6" r="2.6" />
+        <circle cx="18" cy="18" r="2.6" />
+        <line x1="8.3" y1="10.8" x2="15.7" y2="7.2" />
+        <line x1="8.3" y1="13.2" x2="15.7" y2="16.8" />
+      </svg>
+      <span>Share</span>
+    </button>
+  </div>
 
   <!-- Photo lightbox -->
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>

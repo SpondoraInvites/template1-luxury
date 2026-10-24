@@ -6,7 +6,7 @@
    2. Text hydration                        9. Countdown (flip)
    3. Cinematic opening                    10. Background music
    4. Hero letter reveal                   11. RSVP form
-   5. Story timeline (scroll-drawn rail)   12. Share
+   5. Story timeline (scroll-drawn rail)   12. Share menu
    6. Event cards                          13. FX: dust · parallax · grain ·
    7. Gallery + lightbox + custom sections     comet · traces · flourishes
    ============================================================ */
@@ -818,28 +818,14 @@
     toastTimer = setTimeout(function () { toast.classList.remove("is-visible"); }, 2600);
   }
 
-  function share() {
-    var data = {
-      title: document.title,
-      text: "You\u2019re invited \u2014 " + cfg.couple.name1 + " & " + cfg.couple.name2 +
-        " \u00B7 " + cfg.dateDisplay + " \u00B7 " + cfg.city,
-      url: location.origin === "null" || location.protocol === "file:"
-        ? "https://your-invite-link.example"
-        : location.href,
-    };
-    if (navigator.share) {
-      navigator.share(data).catch(function () { /* user dismissed */ });
-      return;
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(data.url).then(
-        function () { showToast("Link copied to clipboard"); },
-        function () { fallbackCopy(data.url); }
-      );
-      return;
-    }
-    fallbackCopy(data.url);
-  }
+  /* Channels — compose prefilled links from the invitation data. No backend:
+     copy has a legacy-http fallback; the rest open the target app directly. */
+  var enc = encodeURIComponent;
+  var shareText = "You\u2019re invited \u2014 " + cfg.couple.name1 + " & " + cfg.couple.name2 +
+    " \u00B7 " + cfg.dateDisplay + " \u00B7 " + cfg.city;
+  var shareUrl = location.origin === "null" || location.protocol === "file:"
+    ? "https://your-invite-link.example"
+    : location.href;
 
   function fallbackCopy(text) {
     var ta = document.createElement("textarea");
@@ -858,22 +844,100 @@
     document.body.removeChild(ta);
   }
 
+  function copyLink() {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).then(
+        function () { showToast("Link copied to clipboard"); },
+        function () { fallbackCopy(shareUrl); }
+      );
+      return;
+    }
+    fallbackCopy(shareUrl);
+  }
+
+  var shareChannels = {
+    copy: copyLink,
+    whatsapp: function () {
+      window.open("https://wa.me/?text=" + enc(shareText + "\n" + shareUrl), "_blank", "noopener");
+    },
+    /* shortcut: the deep link only opens the Messenger app (mobile); the
+       desktop web dialog needs a registered Facebook app ID */
+    messenger: function () {
+      window.open("fb-messenger://share/?link=" + enc(shareUrl), "_blank", "noopener");
+    },
+    telegram: function () {
+      window.open("https://t.me/share/url?url=" + enc(shareUrl) + "&text=" + enc(shareText), "_blank", "noopener");
+    },
+    email: function () {
+      location.href = "mailto:?subject=" + enc(shareText) + "&body=" + enc(shareText + "\n" + shareUrl);
+    },
+  };
+
+  var sharePairs = [];
+
   ["#shareBtn", "#shareFab"].forEach(function (sel) {
     var btn = $(sel);
-    if (btn) btn.addEventListener("click", share);
+    var menu = btn ? document.getElementById(btn.getAttribute("aria-controls") || "") : null;
+    if (!btn || !menu) return;
+
+    menu.hidden = false; /* JS is healthy — the .open class takes over from [hidden] */
+
+    function setOpen(open) {
+      menu.classList.toggle("open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    btn.addEventListener("click", function () {
+      setOpen(!menu.classList.contains("open"));
+    });
+
+    /* Clicks elsewhere close the menu. */
+    document.addEventListener("click", function (e) {
+      if (menu.classList.contains("open") &&
+          !menu.contains(e.target) &&
+          e.target.closest("[data-share-button]") !== btn) setOpen(false);
+    });
+
+    Object.keys(shareChannels).forEach(function (key) {
+      var channelBtn = menu.querySelector('[data-share="' + key + '"]');
+      if (!channelBtn) return;
+      channelBtn.addEventListener("click", function () {
+        if (key === "copy") {
+          copyLink();
+          /* Confirm on the button itself */
+          var original = channelBtn.textContent;
+          channelBtn.textContent = "Copied \u2713";
+          setTimeout(function () { channelBtn.textContent = original; }, 1600);
+        } else {
+          shareChannels[key]();
+          setOpen(false);
+        }
+      });
+    });
+
+    sharePairs.push({ button: btn, menu: menu, setOpen: setOpen });
+  });
+
+  /* Escape closes every open share menu. */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    sharePairs.forEach(function (p) {
+      if (p.menu.classList.contains("open")) { p.setOpen(false); p.button.focus(); }
+    });
   });
 
   /* Floating share pill appears after hero */
   var fab = $("#shareFab");
   var hero = $(".hero");
-  if (fab && hero && "IntersectionObserver" in window) {
+  var floatWrap = fab ? fab.closest(".float-share") : null;
+  if (floatWrap && hero && "IntersectionObserver" in window) {
     new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        fab.classList.toggle("is-visible", !e.isIntersecting);
+        floatWrap.classList.toggle("is-visible", !e.isIntersecting);
       });
     }, { rootMargin: "-72px 0px 0px 0px" }).observe(hero);
-  } else if (fab) {
-    fab.classList.add("is-visible");
+  } else if (floatWrap) {
+    floatWrap.classList.add("is-visible");
   }
 
   /* ============ 13. FX: dust · rail · parallax · reveals · progress ============ */
