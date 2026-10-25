@@ -765,6 +765,12 @@
       var submitBtn = $("#rsvpSubmit");
       if (submitBtn) submitBtn.disabled = true;
 
+      // Reserve the WhatsApp tab during the submit gesture. Opening it only
+      // after an endpoint failure is asynchronous and is blocked by browsers.
+      var whatsappWindow = cfg.rsvp.endpoint && cfg.rsvp.whatsapp
+        ? window.open("", "_blank") : null;
+      if (whatsappWindow) whatsappWindow.opener = null;
+
       var finish = function (msg) {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -782,14 +788,18 @@
         })
           .then(function (r) {
             if (!r.ok) throw new Error("HTTP " + r.status);
-            return r.json ? r.json() : {};
           })
-          .then(function () { finish(cfg.rsvp.successNote); })
+          .then(function () {
+            if (whatsappWindow) whatsappWindow.close();
+            finish(cfg.rsvp.successNote);
+          })
           .catch(function () {
             if (cfg.rsvp.whatsapp) {
-              window.open(whatsappUrl(data), "_blank", "noopener");
+              if (whatsappWindow) whatsappWindow.location.href = whatsappUrl(data);
+              else window.open(whatsappUrl(data), "_blank", "noopener");
               finish("We opened WhatsApp with your answers \u2014 just press send.");
             } else {
+              if (whatsappWindow) whatsappWindow.close();
               finish("Something went wrong sending your RSVP \u2014 please try again.");
             }
           });
