@@ -29,13 +29,29 @@ function setup({fetchImpl, name = 'Nusrat Ahmed'} = {}) {
   element('#rsvpDone');
   element('#rsvpName').value = name;
   element('#rsvpGuests').value = '3';
+  const cfg = {
+    couple: { name1: 'Ayan', name2: 'Mim' },
+    events: [],
+    rsvp: { enabled: true, endpoint: 'https://example.test/rsvp', whatsapp: '8801712345678', successNote: 'Thank you' },
+  };
   const context = {
     $: element,
     $$: () => [],
-    cfg: {
-      couple: { name1: 'Ayan', name2: 'Mim' },
-      events: [],
-      rsvp: { enabled: true, endpoint: 'https://example.test/rsvp', whatsapp: '8801712345678', successNote: 'Thank you' },
+    cfg,
+    c: cfg,
+    L: value => String(value),
+    t: {
+      nameSep: '&',
+      guestSingular: 'guest',
+      guestPlural: 'guests',
+      rsvpWhatsappHeader: 'RSVP \u2014 {couple}',
+      rsvpNameLine: 'Name: {name}',
+      rsvpAttendingYes: 'Attending: Joyfully, yes ({guests})',
+      rsvpAttendingNo: 'Attending: Regretfully, no',
+      rsvpEventsLine: 'Events: {events}',
+      rsvpMessageLine: 'Message: {message}',
+      rsvpWhatsappOpened: 'We opened WhatsApp with your answers \u2014 just press send.',
+      rsvpError: 'Something went wrong sending your RSVP \u2014 please try again.',
     },
     window,
     fetch: fetchImpl,

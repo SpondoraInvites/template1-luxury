@@ -1728,6 +1728,11 @@ select.field__input {
 
 .choice { display: flex; flex-wrap: wrap; gap: 10px; }
 
+@media (max-width: 480px) {
+  .choice { flex-direction: column; align-items: stretch; }
+  .choice__opt { width: 100%; justify-content: center; }
+}
+
 .choice__opt {
   display: inline-flex;
   align-items: center;
@@ -2421,6 +2426,8 @@ html.motion-reduced .chapter::before { transition: none !important; }
     gap: 54px;
   }
   .venue__name { margin-top: 0; }
+  .venue__info .section-title { text-align: left; }
+  .venue__info .flourish { margin-left: 0; }
   .venue__frame iframe { height: 380px; }
 
   /* — RSVP — */
@@ -2436,3 +2443,87 @@ html.motion-reduced .chapter::before { transition: none !important; }
   .intro__initials { font-size: 40px; }
   .intro__line { font-size: 27px; }
 }
+
+/* ============ Language toggle (EN / বাংলা) ============ */
+
+.lang-toggle {
+  position: fixed;
+  top: calc(48px + env(safe-area-inset-top, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  z-index: 60; /* below the intro (90) and the toast (100) */
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  background: var(--bg-deep);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px -12px #000;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.lang-toggle[hidden] { display: none; }
+
+.lang-toggle__opt { opacity: 0.5; transition: opacity 0.25s ease; }
+.lang-toggle__opt.is-active { opacity: 1; }
+.lang-toggle__opt[data-lang-opt="bn"] { letter-spacing: 0.02em; }
+
+.lang-toggle__sep { opacity: 0.35; font-weight: 400; }
+
+.lang-toggle:hover,
+.lang-toggle:focus-visible { border-color: var(--gold); }
+
+/* Bangla typography refinement.
+   Bengali glyphs fall back per-glyph to Noto Serif Bengali (already in every
+   font stack), so Latin text keeps its chosen display/script/sans face. */
+html[lang="bn"] .section-title,
+html[lang="bn"] .hero__names,
+html[lang="bn"] .intro__names,
+html[lang="bn"] .event-card__name,
+html[lang="bn"] .chapter__title,
+html[lang="bn"] .c-card__title,
+html[lang="bn"] .footer__names,
+html[lang="bn"] .footer__closing { letter-spacing: normal; }
+
+/* Small tracked uppercase labels would be unreadable in Bangla — the script
+   has no case, and letters need to stay joined. */
+html[lang="bn"] .eyebrow,
+html[lang="bn"] .intro__eyebrow,
+html[lang="bn"] .chapter__label,
+html[lang="bn"] .event-card__tag,
+html[lang="bn"] .countdown__label,
+html[lang="bn"] .c-card__kicker,
+html[lang="bn"] .custom__quote-source,
+html[lang="bn"] .field__label,
+html[lang="bn"] .footer__date,
+html[lang="bn"] .footer__credit,
+html[lang="bn"] .footer__hashtag,
+html[lang="bn"] .g-photo__cap,
+html[lang="bn"] .link-btn,
+html[lang="bn"] .share-menu button,
+html[lang="bn"] .share-btn,
+html[lang="bn"] .share-fab,
+html[lang="bn"] .lang-toggle,
+html[lang="bn"] .gallery__hint {
+  font-size: 13px;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+html[lang="bn"] .eyebrow { font-size: 14px; }
+
+html[lang="bn"] .hero__date,
+html[lang="bn"] .intro__open,
+html[lang="bn"] .rsvp__submit,
+html[lang="bn"] .hero__scroll span {
+  font-size: 13px;
+  letter-spacing: normal;
+  text-transform: none;
+}
+html[lang="bn"] .intro__eyebrow { font-size: 13px; }
+html[lang="bn"] .countdown__label { font-size: 12.5px; }

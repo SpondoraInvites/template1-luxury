@@ -3,12 +3,13 @@
    All content comes from INVITE_CONFIG (config.js).
 
    1. Theme · palette · custom fonts        8. Map
-   2. Text hydration                        9. Countdown (flip)
+   2. Text hydration + EN/বাংলা           9. Countdown (flip)
    3. Cinematic opening                    10. Background music
    4. Hero letter reveal                   11. RSVP form
    5. Story timeline (scroll-drawn rail)   12. Share menu
    6. Event cards                          13. FX: dust · parallax · grain ·
-   7. Gallery + lightbox + custom sections     comet · traces · flourishes
+   7. Gallery + lightbox + custom sections    comet · traces · flourishes
+                                           14. Language toggle
    ============================================================ */
 (function () {
   "use strict";
@@ -25,6 +26,225 @@
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
+  }
+
+  /* ============ 0. Language / i18n ============
+     English is the default. First-time visitors whose browser language
+     starts with "bn" get Bangla; the choice is remembered in localStorage.
+     UI chrome strings live in UI below. Client content is localised via the
+     optional "bn" block in config.js (missing keys fall back to English).
+     With no "bn" block the toggle hides itself and the site stays English. */
+  var LANG_KEY = "invite-lang";
+
+  var UI = {
+    en: {
+      documentTitleSuffix: "Wedding Invitation",
+      nameSep: "&",
+      amp: "&",
+      scroll: "Scroll",
+      saveTheDate: "Save the Date",
+      countdownTitle: "Counting Down<br /><em>to Forever</em>",
+      days: "Days",
+      hours: "Hours",
+      minutes: "Minutes",
+      seconds: "Seconds",
+      countdownAria: "Countdown to the wedding",
+      eventsEyebrow: "When & Where",
+      eventsTitle: "Three Evenings of <em>Light</em>",
+      galleryHint: "Tap a photo to view it close-up",
+      viewPhoto: "View photo: {name}",
+      venueEyebrow: "The Venue",
+      venueTitle: "Find Us <em>There</em>",
+      mapTitle: "Map to the wedding venue",
+      openInMaps: "Open in Google Maps \u2197",
+      shareAria: "Share this invitation",
+      shareThis: "Share this Invitation",
+      share: "Share",
+      shareCopy: "Copy link",
+      shareWhatsApp: "WhatsApp",
+      shareMessenger: "Messenger",
+      shareTelegram: "Telegram",
+      shareEmail: "Email",
+      socialInstagram: "Spondora Invites on Instagram",
+      socialFacebook: "Spondora Invites on Facebook",
+      viewOnMap: "View on Map \u2197",
+      addToCalendar: "Add to Calendar \u2197",
+      labelDate: "Date",
+      labelTime: "Time",
+      labelVenue: "Venue",
+      labelAddress: "Address",
+      linkCopied: "Link copied to clipboard",
+      copied: "Copied \u2713",
+      shareText: "You\u2019re invited \u2014 {names} \u00B7 {date} \u00B7 {city}",
+      calendarDetails: "We would be honoured by your presence. {hashtag}",
+      rsvpEyebrow: "Will You Join Us?",
+      rsvpTitle: "Kindly <em>Respond</em>",
+      rsvpName: "Your Name",
+      rsvpNamePh: "e.g. Rahim Uddin & family",
+      rsvpAttending: "Will you be attending?",
+      rsvpYes: "Joyfully, yes",
+      rsvpNo: "Regretfully, no",
+      rsvpGuests: "Number of Guests",
+      guest1: "1 guest",
+      guest2: "2 guests",
+      guest3: "3 guests",
+      guest4: "4 guests",
+      guest5: "5 guests",
+      guest6: "6+ guests",
+      rsvpEvents: "Which events will you attend?",
+      rsvpMessage: "A Message for the Couple",
+      rsvpOptional: "(optional)",
+      rsvpMessagePh: "Your wishes, duas & blessings\u2026",
+      rsvpSubmit: "Send RSVP",
+      rsvpWhatsappHeader: "RSVP \u2014 {couple}",
+      rsvpNameLine: "Name: {name}",
+      rsvpAttendingYes: "Attending: Joyfully, yes ({guests})",
+      rsvpAttendingNo: "Attending: Regretfully, no",
+      rsvpEventsLine: "Events: {events}",
+      rsvpMessageLine: "Message: {message}",
+      guestSingular: "guest",
+      guestPlural: "guests",
+      rsvpWhatsappOpened: "We opened WhatsApp with your answers \u2014 just press send.",
+      rsvpError: "Something went wrong sending your RSVP \u2014 please try again.",
+      musicPlay: "Play background music",
+      musicPause: "Pause background music",
+      lightboxLabel: "Photo viewer",
+      lightboxClose: "Close photo viewer",
+      lightboxPrev: "Previous photo",
+      lightboxNext: "Next photo",
+      switchTo: "Switch to Bangla",
+    },
+    bn: {
+      documentTitleSuffix: "বিয়ের আমন্ত্রণ",
+      nameSep: "ও",
+      amp: "ও",
+      scroll: "নিচে দেখুন",
+      saveTheDate: "তারিখটি মনে রাখুন",
+      countdownTitle: "মুহূর্ত গুনছি<br /><em>চিরকালের জন্য</em>",
+      days: "দিন",
+      hours: "ঘণ্টা",
+      minutes: "মিনিট",
+      seconds: "সেকেন্ড",
+      countdownAria: "বিয়ের কাউন্টডাউন",
+      eventsEyebrow: "কখন ও কোথায়",
+      eventsTitle: "আলোয় ভরা <em>তিন সন্ধ্যা</em>",
+      galleryHint: "ছবিতে চাপ দিয়ে বড় করে দেখুন",
+      viewPhoto: "ছবি দেখুন: {name}",
+      venueEyebrow: "স্থান",
+      venueTitle: "আমাদের খুঁজে পান <em>সেখানে</em>",
+      mapTitle: "বিয়ের স্থানের মানচিত্র",
+      openInMaps: "গুগল ম্যাপে খুলুন \u2197",
+      shareAria: "এই আমন্ত্রণটি শেয়ার করুন",
+      shareThis: "এই আমন্ত্রণটি শেয়ার করুন",
+      share: "শেয়ার",
+      shareCopy: "লিংক কপি করুন",
+      shareWhatsApp: "হোয়াটসঅ্যাপ",
+      shareMessenger: "মেসেঞ্জার",
+      shareTelegram: "টেলিগ্রাম",
+      shareEmail: "ইমেইল",
+      socialInstagram: "ইনস্টাগ্রামে Spondora Invites",
+      socialFacebook: "ফেসবুকে Spondora Invites",
+      viewOnMap: "মানচিত্রে দেখুন \u2197",
+      addToCalendar: "ক্যালেন্ডারে যোগ করুন \u2197",
+      labelDate: "তারিখ",
+      labelTime: "সময়",
+      labelVenue: "স্থান",
+      labelAddress: "ঠিকানা",
+      linkCopied: "লিংক কপি হয়েছে",
+      copied: "কপি হয়েছে \u2713",
+      shareText: "আপনি আমন্ত্রিত \u2014 {names} \u00B7 {date} \u00B7 {city}",
+      calendarDetails: "আপনাদের উপস্থিতিই আমাদের সৌভাগ্য। {hashtag}",
+      rsvpEyebrow: "আপনি কি আমাদের সঙ্গে থাকবেন?",
+      rsvpTitle: "সাদরে <em>উত্তর দিন</em>",
+      rsvpName: "আপনার নাম",
+      rsvpNamePh: "যেমন: রহিম উদ্দিন ও পরিবার",
+      rsvpAttending: "আপনি কি উপস্থিত থাকবেন?",
+      rsvpYes: "আনন্দের সঙ্গে, হ্যাঁ",
+      rsvpNo: "দুঃখিত, পারছি না",
+      rsvpGuests: "অতিথির সংখ্যা",
+      guest1: "১ জন অতিথি",
+      guest2: "২ জন অতিথি",
+      guest3: "৩ জন অতিথি",
+      guest4: "৪ জন অতিথি",
+      guest5: "৫ জন অতিথি",
+      guest6: "৬+ জন অতিথি",
+      rsvpEvents: "কোন কোন অনুষ্ঠানে থাকবেন?",
+      rsvpMessage: "নবদম্পতির জন্য একটি বার্তা",
+      rsvpOptional: "(ঐচ্ছিক)",
+      rsvpMessagePh: "আপনার শুভেচ্ছা, দোয়া ও আশীর্বাদ\u2026",
+      rsvpSubmit: "আরএসভিপি পাঠান",
+      rsvpWhatsappHeader: "আরএসভিপি \u2014 {couple}",
+      rsvpNameLine: "নাম: {name}",
+      rsvpAttendingYes: "উপস্থিতি: আনন্দের সঙ্গে, হ্যাঁ ({guests})",
+      rsvpAttendingNo: "উপস্থিতি: দুঃখিত, পারছি না",
+      rsvpEventsLine: "অনুষ্ঠান: {events}",
+      rsvpMessageLine: "বার্তা: {message}",
+      guestSingular: "জন অতিথি",
+      guestPlural: "জন অতিথি",
+      rsvpWhatsappOpened: "আপনার উত্তরসহ হোয়াটসঅ্যাপ খোলা হয়েছে \u2014 শুধু পাঠিয়ে দিন।",
+      rsvpError: "আরএসভিপি পাঠাতে সমস্যা হয়েছে \u2014 আবার চেষ্টা করুন।",
+      musicPlay: "ব্যাকগ্রাউন্ড সংগীত চালু করুন",
+      musicPause: "ব্যাকগ্রাউন্ড সংগীত বন্ধ করুন",
+      lightboxLabel: "ছবি দেখার উইন্ডো",
+      lightboxClose: "ছবি দেখার উইন্ডো বন্ধ করুন",
+      lightboxPrev: "আগের ছবি",
+      lightboxNext: "পরের ছবি",
+      switchTo: "ইংরেজিতে পরিবর্তন করুন",
+    },
+  };
+
+  var BN_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+
+  var bnAvailable = !!(cfg.bn && typeof cfg.bn === "object" && !Array.isArray(cfg.bn));
+  var lang = "en";
+  var t = UI.en;       // current UI strings
+  var c = cfg;         // current content config (English, or merged with cfg.bn)
+  var refreshCountdown = null; // language swaps call this to re-render digits
+  var refreshRsvp = null;      // set by the RSVP module
+  var revealIO = null;         // created by initReveals()
+  var revealReady = false;
+
+  function isPlainObject(o) {
+    return !!o && typeof o === "object" && !Array.isArray(o);
+  }
+
+  // Merge the Bangla mirror over the English config. Plain objects merge
+  // key by key (a bn block may localise only some fields); arrays replace.
+  function deepMerge(base, over) {
+    var out = Array.isArray(base) ? base.slice() : Object.assign({}, base);
+    Object.keys(over).forEach(function (k) {
+      out[k] = isPlainObject(base && base[k]) && isPlainObject(over[k])
+        ? deepMerge(base[k], over[k])
+        : over[k];
+    });
+    return out;
+  }
+
+  // Localise generated numerals (countdown, footer date, lightbox count).
+  function L(value) {
+    var s = String(value);
+    if (lang !== "bn") return s;
+    return s.replace(/[0-9]/g, function (d) { return BN_DIGITS[+d]; });
+  }
+
+  function initialLang() {
+    if (!bnAvailable) return "en";
+    try {
+      var saved = localStorage.getItem(LANG_KEY);
+      if (saved === "bn" || saved === "en") return saved;
+    } catch (e) { /* storage unavailable (private mode etc.) */ }
+    var nav = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    return String(nav).toLowerCase().indexOf("bn") === 0 ? "bn" : "en";
+  }
+
+  function setLang(next, persist) {
+    lang = UI[next] ? next : "en";
+    t = UI[lang];
+    c = (lang === "bn" && bnAvailable) ? deepMerge(cfg, cfg.bn) : cfg;
+    if (persist) {
+      try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* ignore */ }
+    }
+    applyLanguage();
   }
 
   /* Motion default: "always" — the cinematic experience plays for every
@@ -115,57 +335,65 @@
   function syncThemeColor() {
     var meta = $('meta[name="theme-color"]');
     if (!meta) return;
-    var c = getComputedStyle(root).getPropertyValue("--bg-deep").trim();
-    if (c) meta.setAttribute("content", c);
+    var color = getComputedStyle(root).getPropertyValue("--bg-deep").trim();
+    if (color) meta.setAttribute("content", color);
   }
   syncThemeColor();
 
   /* ============ 2. Text hydration ============ */
-  // Multi-slot attributes (blessing / initials / names appear more than once).
-  ["data-blessing", "data-initials", "data-name1", "data-name2"].forEach(function (attr) {
-    var val = attr === "data-blessing" ? cfg.blessing
-      : attr === "data-initials" ? cfg.couple.initials
-      : attr === "data-name1" ? cfg.couple.name1
-      : cfg.couple.name2;
-    if (val == null) return;
-    $$("[" + attr + "]").forEach(function (el) { el.textContent = val; });
-  });
+  function hydrateContent() {
+    // Multi-slot attributes (blessing / initials / names appear more than once).
+    [
+      ["data-blessing", c.blessing],
+      ["data-initials", c.couple.initials],
+      ["data-name1", c.couple.name1],
+      ["data-name2", c.couple.name2],
+    ].forEach(function (pair) {
+      if (pair[1] == null) return;
+      $$("[" + pair[0] + "]").forEach(function (el) { el.textContent = pair[1]; });
+    });
 
-  var slots = {
-    "data-date-display": cfg.dateDisplay,
-    "data-city": cfg.city,
-    "data-hero-eyebrow": cfg.heroEyebrow || "The Wedding of",
-    "data-welcome-eyebrow": cfg.welcome.eyebrow,
-    "data-parents1": cfg.welcome.parents1,
-    "data-parents2": cfg.welcome.parents2,
-    "data-invite-line": cfg.welcome.inviteLine,
-    "data-epigraph": cfg.epigraph,
-    "data-countdown-note": cfg.countdownNote,
-    "data-venue-name": cfg.venue.name,
-    "data-venue-address": (cfg.venue.address || ""),
-    "data-closing": cfg.closing,
-    "data-footer-names": cfg.couple.name1 + " & " + cfg.couple.name2,
-    "data-footer-date": formatDateShort() + " \u00B7 " + cfg.city.replace(", Bangladesh", "").replace(/,.*/, ""),
-    "data-hashtag": cfg.couple.hashtag,
-    "data-credit": cfg.credit,
-    "data-intro-eyebrow": cfg.intro && cfg.intro.eyebrow,
-    "data-intro-line": cfg.intro && cfg.intro.line,
-    "data-intro-enter": cfg.intro && cfg.intro.enterLabel,
-  };
+    var slots = {
+      "data-date-display": c.dateDisplay,
+      "data-city": c.city,
+      "data-hero-eyebrow": c.heroEyebrow || "The Wedding of",
+      "data-welcome-eyebrow": c.welcome.eyebrow,
+      "data-parents1": c.welcome.parents1,
+      "data-parents2": c.welcome.parents2,
+      "data-invite-line": c.welcome.inviteLine,
+      "data-epigraph": c.epigraph,
+      "data-countdown-note": c.countdownNote,
+      "data-venue-name": c.venue.name,
+      "data-venue-address": (c.venue.address || ""),
+      "data-closing": c.closing,
+      "data-footer-names": c.couple.name1 + " " + t.nameSep + " " + c.couple.name2,
+      "data-footer-date": L(formatDateShort()) + " \u00B7 " + c.city.replace(/,.*/, ""),
+      "data-hashtag": c.couple.hashtag,
+      "data-credit": c.credit,
+      "data-intro-eyebrow": c.intro && c.intro.eyebrow,
+      "data-intro-line": c.intro && c.intro.line,
+      "data-intro-enter": c.intro && c.intro.enterLabel,
+    };
 
-  Object.keys(slots).forEach(function (attr) {
-    if (slots[attr] == null) return;
-    $$("[" + attr + "]").forEach(function (el) { el.textContent = slots[attr]; });
-  });
+    Object.keys(slots).forEach(function (attr) {
+      if (slots[attr] == null) return;
+      $$("[" + attr + "]").forEach(function (el) { el.textContent = slots[attr]; });
+    });
 
-  // Hide the epigraph slot entirely when left empty.
-  if (!cfg.epigraph) {
+    // Hide the epigraph slot entirely when left empty.
     var epi = $("[data-epigraph]");
-    if (epi) epi.hidden = true;
+    if (epi) epi.hidden = !c.epigraph;
+
+    // Document title & social meta follow the couple and the language.
+    var title = c.couple.name1 + " " + t.nameSep + " " + c.couple.name2 + " \u2014 " + t.documentTitleSuffix;
+    document.title = title;
+    var ogTitle = $('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", title);
   }
 
   // Footer social icons: hrefs come from cfg.social; a fully empty
   // block hides the icon row (the credit line stays on its own).
+  // Language-independent, so this runs once.
   var socialsWrap = $("[data-socials]");
   if (socialsWrap) {
     var socialMap = cfg.social || {};
@@ -181,15 +409,48 @@
     if (!socialsWrap.querySelector("a")) socialsWrap.hidden = true;
   }
 
-  // Document title & social meta follow the couple.
-  var title = cfg.couple.name1 + " & " + cfg.couple.name2 + " \u2014 Wedding Invitation";
-  document.title = title;
-  var ogTitle = $('meta[property="og:title"]');
-  if (ogTitle) ogTitle.setAttribute("content", title);
+  // Swap every language-dependent piece of the page in one pass.
+  function applyLanguage() {
+    document.documentElement.lang = lang;
+    $$("[data-i18n]").forEach(function (el) {
+      var v = t[el.getAttribute("data-i18n")];
+      if (typeof v === "string") el.textContent = v;
+    });
+    $$("[data-i18n-html]").forEach(function (el) {
+      var v = t[el.getAttribute("data-i18n-html")];
+      if (typeof v === "string") el.innerHTML = v;
+    });
+    $$("[data-i18n-aria]").forEach(function (el) {
+      var v = t[el.getAttribute("data-i18n-aria")];
+      if (typeof v === "string") el.setAttribute("aria-label", v);
+    });
+    $$("[data-i18n-title]").forEach(function (el) {
+      var v = t[el.getAttribute("data-i18n-title")];
+      if (typeof v === "string") el.setAttribute("title", v);
+    });
+    $$("[data-i18n-ph]").forEach(function (el) {
+      var v = t[el.getAttribute("data-i18n-ph")];
+      if (typeof v === "string") el.setAttribute("placeholder", v);
+    });
+    var toastEl = $("#toast");
+    if (toastEl) toastEl.textContent = t.linkCopied;
+    hydrateContent();
+    renderStory();
+    renderEvents();
+    renderGallery();
+    renderCustomSections();
+    if (typeof refreshRsvp === "function") refreshRsvp();
+    syncMusicLabel();
+    updateToggleUI();
+    initLetters();
+    // Re-render countdown digits immediately (e.g. ৪২ vs 42); no-op before
+    // the countdown module has initialised.
+    if (typeof refreshCountdown === "function") refreshCountdown();
+  }
 
   function formatDateShort() {
     // "19 · 03 · 2027" from weddingDateTime (venue-local via manual parse).
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(cfg.weddingDateTime);
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(c.weddingDateTime);
     return m ? m[3] + " \u00B7 " + m[2] + " \u00B7 " + m[1] : "";
   }
 
@@ -240,15 +501,17 @@
   })();
 
   /* ============ 4. Hero letter reveal ============ */
-  (function initLetters() {
-    if (reduced) return;
+  function initLetters() {
     $$(".hero__name").forEach(function (el) {
+      // Bangla conjuncts and vowel signs break when split into per-character
+      // spans (shaping does not cross element boundaries) — keep those whole.
+      if (reduced || lang === "bn") return;
       var text = el.textContent;
       el.textContent = "";
       var i = 0;
-      for (var c = 0; c < text.length; c++) {
+      for (var idx = 0; idx < text.length; idx++) {
         var span = document.createElement("span");
-        var ch = text.charAt(c);
+        var ch = text.charAt(idx);
         if (ch === " ") {
           span.className = "ltr ltr--sp";
         } else {
@@ -259,21 +522,24 @@
         el.appendChild(span);
       }
     });
-  })();
+  }
 
   /* ============ 5. Story timeline ============ */
   var storyList = $("#storyList");
-  if (storyList && cfg.story && cfg.story.chapters && cfg.story.chapters.length) {
+
+  function renderStory() {
+    if (!storyList || !c.story || !c.story.chapters || !c.story.chapters.length) return;
     var storyHead = {
       eyebrow: $(".story .eyebrow"),
       title: $(".story .section-title"),
     };
-    if (storyHead.eyebrow) storyHead.eyebrow.textContent = cfg.story.eyebrow;
+    if (storyHead.eyebrow) storyHead.eyebrow.textContent = c.story.eyebrow;
     if (storyHead.title) {
       storyHead.title.innerHTML =
-        esc(cfg.story.title || "Our") + " <em>" + esc(cfg.story.titleAccent || "Story") + "</em>";
+        esc(c.story.title || "Our") + " <em>" + esc(c.story.titleAccent || "Story") + "</em>";
     }
-    storyList.insertAdjacentHTML("beforeend", cfg.story.chapters.map(function (ch) {
+    $$(".chapter", storyList).forEach(function (el) { el.remove(); });
+    storyList.insertAdjacentHTML("beforeend", c.story.chapters.map(function (ch) {
       return (
         '<article class="chapter reveal">' +
         '<span class="chapter__dot" aria-hidden="true"></span>' +
@@ -283,33 +549,32 @@
         "</article>"
       );
     }).join(""));
-    // Remove the sample chapter baked into index.html.
-    var sample = storyList.querySelector(".chapter:not(.reveal)");
-    if (sample) sample.remove();
-
-    // Gently illuminate the chapter the guest is reading: whichever
-    // chapter's centre sits nearest the middle of the viewport (rAF-gated).
-    if (!reduced) {
-      var chapters = $$(".chapter", storyList);
-      var picking = false;
-      var pickActive = function () {
-        picking = false;
-        var vh = window.innerHeight;
-        var best = null, bestDist = Infinity;
-        chapters.forEach(function (c) {
-          var r = c.getBoundingClientRect();
-          if (r.bottom < -80 || r.top > vh + 80) return;
-          var d = Math.abs(r.top + r.height / 2 - vh / 2);
-          if (d < bestDist) { bestDist = d; best = c; }
-        });
-        chapters.forEach(function (c) { c.classList.toggle("is-active", c === best); });
-      };
-      window.addEventListener("scroll", function () {
-        if (!picking) { picking = true; requestAnimationFrame(pickActive); }
-      }, { passive: true });
-      pickActive();
-    }
+    $$(".chapter", storyList).forEach(observeReveal);
   }
+
+  // Gently illuminate the chapter the guest is reading: whichever
+  // chapter's centre sits nearest the middle of the viewport (rAF-gated).
+  (function initStoryFocus() {
+    if (!storyList || reduced) return;
+    var picking = false;
+    function pickActive() {
+      picking = false;
+      var chapters = $$(".chapter", storyList);
+      var vh = window.innerHeight;
+      var best = null, bestDist = Infinity;
+      chapters.forEach(function (ch) {
+        var r = ch.getBoundingClientRect();
+        if (r.bottom < -80 || r.top > vh + 80) return;
+        var d = Math.abs(r.top + r.height / 2 - vh / 2);
+        if (d < bestDist) { bestDist = d; best = ch; }
+      });
+      chapters.forEach(function (ch) { ch.classList.toggle("is-active", ch === best); });
+    }
+    window.addEventListener("scroll", function () {
+      if (!picking) { picking = true; requestAnimationFrame(pickActive); }
+    }, { passive: true });
+    pickActive();
+  })();
 
   /* ============ 6. Event cards ============ */
   var ICONS = {
@@ -319,8 +584,20 @@
   };
 
   var list = $("#eventList");
-  if (list && cfg.events && cfg.events.length) {
-    list.innerHTML = cfg.events.map(renderEvent).join("");
+
+  function renderEvents() {
+    if (!list) return;
+    if (!c.events || !c.events.length) { list.innerHTML = ""; return; }
+    // Cards that were already revealed stay visible on a language swap.
+    var cards = $$(".event-card", list);
+    var alreadyIn = cards.length > 0 && cards.every(function (el) {
+      return el.classList.contains("is-in");
+    });
+    list.innerHTML = c.events.map(renderEvent).join("");
+    $$(".event-card", list).forEach(function (el) {
+      if (alreadyIn) el.classList.add("is-in");
+      else observeReveal(el);
+    });
   }
 
   function renderEvent(ev) {
@@ -333,14 +610,14 @@
       (ev.tagline ? '<p class="event-card__tagline">' + esc(ev.tagline) + "</p>" : "") +
       '<div class="event-card__divider" aria-hidden="true"></div>' +
       '<dl class="event-card__rows">' +
-      row(ICONS.date, "Date", ev.date) +
-      row(ICONS.time, "Time", ev.time) +
-      row(ICONS.pin, "Venue", ev.venue) +
-      (ev.address ? row('<span class="row__dot" aria-hidden="true"></span>', "Address", ev.address) : "") +
+      row(ICONS.date, t.labelDate, ev.date) +
+      row(ICONS.time, t.labelTime, ev.time) +
+      row(ICONS.pin, t.labelVenue, ev.venue) +
+      (ev.address ? row('<span class="row__dot" aria-hidden="true"></span>', t.labelAddress, ev.address) : "") +
       "</dl>" +
       '<div class="event-card__actions">' +
-      '<a class="link-btn" href="' + mapUrl + '" target="_blank" rel="noopener">View on Map <span class="link-btn__arrow" aria-hidden="true">\u2197</span></a>' +
-      (calUrl ? '<a class="link-btn link-btn--calendar" href="' + calUrl + '" target="_blank" rel="noopener">Add to Calendar <span class="link-btn__arrow" aria-hidden="true">\u2197</span></a>' : "") +
+      '<a class="link-btn" href="' + mapUrl + '" target="_blank" rel="noopener">' + esc(t.viewOnMap) + "</a>" +
+      (calUrl ? '<a class="link-btn link-btn--calendar" href="' + calUrl + '" target="_blank" rel="noopener">' + esc(t.addToCalendar) + "</a>" : "") +
       "</div></article>"
     );
   }
@@ -355,9 +632,9 @@
     var end = ev.calDate.replace(/-/g, "") + "T" + ev.calEnd.replace(":", "") + "00";
     var params = {
       action: "TEMPLATE",
-      text: cfg.couple.name1 + " & " + cfg.couple.name2 + " \u2014 " + ev.name,
+      text: c.couple.name1 + " " + t.nameSep + " " + c.couple.name2 + " \u2014 " + ev.name,
       dates: start + "/" + end,
-      details: "We would be honoured by your presence. " + cfg.couple.hashtag,
+      details: t.calendarDetails.replace("{hashtag}", c.couple.hashtag),
       location: [ev.venue, ev.address].filter(Boolean).join(", "),
     };
     if (ev.calTz) params.ctz = ev.calTz;
@@ -368,41 +645,49 @@
 
   /* ============ 7. Gallery + lightbox ============ */
   var galleryGrid = $("#galleryGrid");
-  var photos = (cfg.gallery && cfg.gallery.photos) || [];
 
-  if (galleryGrid && photos.length) {
+  function currentPhotos() {
+    return (c.gallery && c.gallery.photos) || [];
+  }
+
+  function renderGallery() {
+    var photos = currentPhotos();
+    if (!galleryGrid || !photos.length) return;
     var gHead = { eyebrow: $(".gallery .eyebrow"), title: $(".gallery .section-title") };
-    if (gHead.eyebrow) gHead.eyebrow.textContent = cfg.gallery.eyebrow;
+    if (gHead.eyebrow) gHead.eyebrow.textContent = c.gallery.eyebrow;
     if (gHead.title) {
       gHead.title.innerHTML =
-        esc(cfg.gallery.title || "Our") + " <em>" + esc(cfg.gallery.titleAccent || "Gallery") + "</em>";
+        esc(c.gallery.title || "Our") + " <em>" + esc(c.gallery.titleAccent || "Gallery") + "</em>";
     }
     galleryGrid.innerHTML = photos.map(function (p, i) {
       var cls = "g-photo reveal" + (p.wide ? " g-photo--wide" : "") + (p.tall ? " g-photo--tall" : "");
+      var label = t.viewPhoto.replace("{name}", p.alt || p.caption || "photo");
       return (
         '<button class="' + cls + '" type="button" ' +
-        'data-index="' + i + '" aria-label="View photo: ' + esc(p.alt || p.caption || "photo") + '">' +
+        'data-index="' + i + '" aria-label="' + esc(label) + '">' +
         '<img src="' + esc(p.src) + '" alt="' + esc(p.alt || "") + '" loading="lazy" decoding="async" />' +
         (p.caption ? '<span class="g-photo__cap">' + esc(p.caption) + "</span>" : "") +
         "</button>"
       );
     }).join("");
+    $$(".g-photo", galleryGrid).forEach(observeReveal);
   }
 
   (function initLightbox() {
     var lb = $("#lightbox");
-    if (!lb || !photos.length) return;
+    if (!lb) return;
 
     var img = $("#lbImg"), cap = $("#lbCaption"), count = $("#lbCount");
     var current = 0;
     var lastFocus = null;
 
     function render() {
+      var photos = currentPhotos();
       var p = photos[current] || {};
       img.src = p.src || "";
       img.alt = p.alt || "";
       cap.textContent = p.caption || "";
-      count.textContent = (current + 1) + " / " + photos.length;
+      count.textContent = L(current + 1) + " / " + L(photos.length);
       // Replay the gentle zoom-in on each photo.
       img.style.animation = "none";
       void img.offsetWidth;
@@ -428,15 +713,19 @@
     }
 
     function step(d) {
-      current = (current + d + photos.length) % photos.length;
+      var total = currentPhotos().length;
+      if (!total) return;
+      current = (current + d + total) % total;
       render();
     }
 
-    $$(".g-photo").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        open(parseInt(btn.getAttribute("data-index"), 10) || 0);
+    // Delegated so gallery tiles re-rendered on a language swap keep working.
+    if (galleryGrid) {
+      galleryGrid.addEventListener("click", function (e) {
+        var btn = e.target.closest(".g-photo");
+        if (btn) open(parseInt(btn.getAttribute("data-index"), 10) || 0);
       });
-    });
+    }
 
     $("#lbClose").addEventListener("click", close);
     $("#lbPrev").addEventListener("click", function () { step(-1); });
@@ -467,9 +756,9 @@
   })();
 
   /* ============ 7b. Custom sections (the Luxury signature) ============ */
-  (function initCustomSections() {
+  function renderCustomSections() {
     var wrap = $("#customSections");
-    var sections = (cfg.customSections || []).filter(function (s) { return s && s.layout; });
+    var sections = (c.customSections || []).filter(function (s) { return s && s.layout; });
     if (!wrap) return;
     if (!sections.length) { wrap.remove(); return; }
 
@@ -497,15 +786,15 @@
             head(s) +
             (s.note ? '<p class="custom__note">' + esc(s.note) + "</p>" : "") +
             '<div class="c-cards">' +
-            (s.cards || []).map(function (c) {
+            (s.cards || []).map(function (card) {
               return (
                 '<div class="c-card reveal">' +
-                (c.kicker ? '<p class="c-card__kicker">' + esc(c.kicker) + "</p>" : "") +
-                (c.title ? '<h3 class="c-card__title">' + esc(c.title) + "</h3>" : "") +
-                (c.text ? '<p class="c-card__text">' + esc(c.text) + "</p>" : "") +
-                (c.swatches && c.swatches.length
+                (card.kicker ? '<p class="c-card__kicker">' + esc(card.kicker) + "</p>" : "") +
+                (card.title ? '<h3 class="c-card__title">' + esc(card.title) + "</h3>" : "") +
+                (card.text ? '<p class="c-card__text">' + esc(card.text) + "</p>" : "") +
+                (card.swatches && card.swatches.length
                   ? '<div class="c-card__swatches" aria-hidden="true">' +
-                    c.swatches.map(function (hex) { return '<i style="background:' + esc(hex) + '"></i>'; }).join("") +
+                    card.swatches.map(function (hex) { return '<i style="background:' + esc(hex) + '"></i>'; }).join("") +
                     "</div>"
                   : "") +
                 "</div>"
@@ -555,7 +844,10 @@
         ans.style.maxHeight = open ? ans.scrollHeight + "px" : "";
       });
     });
-  })();
+
+    injectFlourishes(wrap);
+    $$(".reveal", wrap).forEach(observeReveal);
+  }
 
   /* ============ 8. Map ============ */
   var mapFrame = $("#venueMap");
@@ -591,11 +883,12 @@
   function tick() {
     var diff = target - Date.now();
     if (isNaN(target)) return;
-    setNum(cd.d, diff <= 0 ? "00" : pad(Math.floor(diff / 864e5)));
-    setNum(cd.h, diff <= 0 ? "00" : pad(Math.floor(diff / 36e5) % 24));
-    setNum(cd.m, diff <= 0 ? "00" : pad(Math.floor(diff / 6e4) % 60));
-    setNum(cd.s, diff <= 0 ? "00" : pad(Math.floor(diff / 1e3) % 60));
+    setNum(cd.d, diff <= 0 ? L("00") : L(pad(Math.floor(diff / 864e5))));
+    setNum(cd.h, diff <= 0 ? L("00") : L(pad(Math.floor(diff / 36e5) % 24)));
+    setNum(cd.m, diff <= 0 ? L("00") : L(pad(Math.floor(diff / 6e4) % 60)));
+    setNum(cd.s, diff <= 0 ? L("00") : L(pad(Math.floor(diff / 1e3) % 60)));
   }
+  refreshCountdown = tick;
   tick();
   setInterval(tick, 1000);
 
@@ -631,14 +924,14 @@
       fadeTo(0.55);
       btn.classList.add("is-playing");
       btn.setAttribute("aria-pressed", "true");
-      btn.setAttribute("aria-label", "Pause background music");
+      btn.setAttribute("aria-label", t.musicPause);
     }
 
     function pause() {
       fadeTo(0, function () { audio.pause(); });
       btn.classList.remove("is-playing");
       btn.setAttribute("aria-pressed", "false");
-      btn.setAttribute("aria-label", "Play background music");
+      btn.setAttribute("aria-label", t.musicPlay);
     }
 
     // Only reveal the control once we know the track loads.
@@ -673,39 +966,50 @@
     });
   })();
 
+  // Keep the music button's label in the current language.
+  function syncMusicLabel() {
+    var btn = $("#musicBtn");
+    if (!btn) return;
+    btn.setAttribute("aria-label", btn.getAttribute("aria-pressed") === "true" ? t.musicPause : t.musicPlay);
+  }
+
   /* ============ 11. RSVP ============ */
   (function initRsvp() {
     var section = $(".rsvp");
     var form = $("#rsvpForm");
     var done = $("#rsvpDone");
     if (!form) return;
-    if (!cfg.rsvp || !cfg.rsvp.enabled) {
+    if (!c.rsvp || !c.rsvp.enabled) {
       if (section) section.style.display = "none";
       return;
     }
 
     var noteEl = $("[data-rsvp-note]");
-    if (noteEl && cfg.rsvp.note) {
-      noteEl.textContent = String(cfg.rsvp.note).replace("{deadline}", cfg.rsvp.deadline || "");
-    }
     var successEl = $("[data-rsvp-success]");
-    if (successEl && cfg.rsvp.successNote) successEl.textContent = cfg.rsvp.successNote;
-
-    // Event checkboxes from the same config that renders the cards.
     var eventsWrap = $("#rsvpEvents");
-    if (eventsWrap && cfg.events && cfg.events.length) {
-      eventsWrap.innerHTML = cfg.events.map(function (ev, i) {
-        return (
-          '<label class="choice__opt">' +
-          '<input type="checkbox" name="events" value="' + esc(ev.name) + '" ' + (i === 0 ? "" : "checked") + ' />' +
-          "<span>" + esc(ev.name) + "</span>" +
-          "</label>"
-        );
-      }).join("");
-    }
-
     var guestsWrap = $("#rsvpGuestsWrap");
     var eventsWrapField = $("#rsvpEventsWrap");
+
+    // Language-dependent copy, re-rendered on every language swap.
+    function renderRsvp() {
+      if (noteEl && c.rsvp.note) {
+        noteEl.textContent = String(c.rsvp.note).replace("{deadline}", c.rsvp.deadline || "");
+      }
+      if (successEl && c.rsvp.successNote) successEl.textContent = c.rsvp.successNote;
+      // Event checkboxes from the same config that renders the cards.
+      if (eventsWrap && c.events && c.events.length) {
+        eventsWrap.innerHTML = c.events.map(function (ev, i) {
+          return (
+            '<label class="choice__opt">' +
+            '<input type="checkbox" name="events" value="' + esc(ev.name) + '" ' + (i === 0 ? "" : "checked") + ' />' +
+            "<span>" + esc(ev.name) + "</span>" +
+            "</label>"
+          );
+        }).join("");
+      }
+    }
+    refreshRsvp = renderRsvp;
+    renderRsvp();
 
     function syncAttendance() {
       var attending = (form.querySelector('input[name="attending"]:checked') || {}).value === "yes";
@@ -719,28 +1023,29 @@
 
     function collect() {
       return {
-        couple: cfg.couple.name1 + " & " + cfg.couple.name2,
+        couple: c.couple.name1 + " " + t.nameSep + " " + c.couple.name2,
         name: ($("#rsvpName") || {}).value || "",
         attending: (form.querySelector('input[name="attending"]:checked') || {}).value || "yes",
         guests: ($("#rsvpGuests") || {}).value || "",
-        events: $$('input[name="events"]:checked', form).map(function (c) { return c.value; }),
+        events: $$('input[name="events"]:checked', form).map(function (el) { return el.value; }),
         message: ($("#rsvpMessage") || {}).value || "",
       };
     }
 
     function whatsappUrl(data) {
+      var count = L(data.guests) + " " + (data.guests === "1" ? t.guestSingular : t.guestPlural);
       var lines = [
-        "RSVP \u2014 " + data.couple,
-        "Name: " + data.name,
+        t.rsvpWhatsappHeader.replace("{couple}", data.couple),
+        t.rsvpNameLine.replace("{name}", data.name),
         data.attending === "yes"
-          ? "Attending: Joyfully, yes (" + data.guests + " guest" + (data.guests === "1" ? "" : "s") + ")"
-          : "Attending: Regretfully, no",
+          ? t.rsvpAttendingYes.replace("{guests}", count)
+          : t.rsvpAttendingNo,
       ];
       if (data.attending === "yes" && data.events.length) {
-        lines.push("Events: " + data.events.join(", "));
+        lines.push(t.rsvpEventsLine.replace("{events}", data.events.join(", ")));
       }
-      if (data.message.trim()) lines.push("Message: " + data.message.trim());
-      return "https://wa.me/" + cfg.rsvp.whatsapp.replace(/[^\d]/g, "") +
+      if (data.message.trim()) lines.push(t.rsvpMessageLine.replace("{message}", data.message.trim()));
+      return "https://wa.me/" + c.rsvp.whatsapp.replace(/[^\d]/g, "") +
         "?text=" + encodeURIComponent(lines.join("\n"));
     }
 
@@ -767,7 +1072,7 @@
 
       // Reserve the WhatsApp tab during the submit gesture. Opening it only
       // after an endpoint failure is asynchronous and is blocked by browsers.
-      var whatsappWindow = cfg.rsvp.endpoint && cfg.rsvp.whatsapp
+      var whatsappWindow = c.rsvp.endpoint && c.rsvp.whatsapp
         ? window.open("", "_blank") : null;
       if (whatsappWindow) whatsappWindow.opener = null;
 
@@ -779,9 +1084,9 @@
         showDone(msg);
       };
 
-      if (cfg.rsvp.endpoint) {
+      if (c.rsvp.endpoint) {
         if (submitBtn) submitBtn.classList.add("is-sending");
-        fetch(cfg.rsvp.endpoint, {
+        fetch(c.rsvp.endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },
           body: JSON.stringify(data),
@@ -791,28 +1096,28 @@
           })
           .then(function () {
             if (whatsappWindow) whatsappWindow.close();
-            finish(cfg.rsvp.successNote);
+            finish(c.rsvp.successNote);
           })
           .catch(function () {
-            if (cfg.rsvp.whatsapp) {
+            if (c.rsvp.whatsapp) {
               if (whatsappWindow) whatsappWindow.location.href = whatsappUrl(data);
               else window.open(whatsappUrl(data), "_blank", "noopener");
-              finish("We opened WhatsApp with your answers \u2014 just press send.");
+              finish(t.rsvpWhatsappOpened);
             } else {
               if (whatsappWindow) whatsappWindow.close();
-              finish("Something went wrong sending your RSVP \u2014 please try again.");
+              finish(t.rsvpError);
             }
           });
         return;
       }
 
-      if (cfg.rsvp.whatsapp) {
+      if (c.rsvp.whatsapp) {
         window.open(whatsappUrl(data), "_blank", "noopener");
-        finish("We opened WhatsApp with your answers \u2014 just press send.");
+        finish(t.rsvpWhatsappOpened);
         return;
       }
 
-      finish(cfg.rsvp.successNote);
+      finish(c.rsvp.successNote);
     });
   })();
 
@@ -831,8 +1136,12 @@
   /* Channels — compose prefilled links from the invitation data. No backend:
      copy has a legacy-http fallback; the rest open the target app directly. */
   var enc = encodeURIComponent;
-  var shareText = "You\u2019re invited \u2014 " + cfg.couple.name1 + " & " + cfg.couple.name2 +
-    " \u00B7 " + cfg.dateDisplay + " \u00B7 " + cfg.city;
+  function inviteText() {
+    return t.shareText
+      .replace("{names}", c.couple.name1 + " " + t.nameSep + " " + c.couple.name2)
+      .replace("{date}", c.dateDisplay)
+      .replace("{city}", c.city);
+  }
   var shareUrl = location.origin === "null" || location.protocol === "file:"
     ? "https://your-invite-link.example"
     : location.href;
@@ -847,7 +1156,7 @@
     ta.select();
     try {
       document.execCommand("copy");
-      showToast("Link copied to clipboard");
+      showToast(t.linkCopied);
     } catch (e) {
       showToast(text);
     }
@@ -857,7 +1166,7 @@
   function copyLink() {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(shareUrl).then(
-        function () { showToast("Link copied to clipboard"); },
+        function () { showToast(t.linkCopied); },
         function () { fallbackCopy(shareUrl); }
       );
       return;
@@ -868,7 +1177,7 @@
   var shareChannels = {
     copy: copyLink,
     whatsapp: function () {
-      window.open("https://wa.me/?text=" + enc(shareText + "\n" + shareUrl), "_blank", "noopener");
+      window.open("https://wa.me/?text=" + enc(inviteText() + "\n" + shareUrl), "_blank", "noopener");
     },
     /* shortcut: the deep link only opens the Messenger app (mobile); the
        desktop web dialog needs a registered Facebook app ID */
@@ -876,10 +1185,10 @@
       window.open("fb-messenger://share/?link=" + enc(shareUrl), "_blank", "noopener");
     },
     telegram: function () {
-      window.open("https://t.me/share/url?url=" + enc(shareUrl) + "&text=" + enc(shareText), "_blank", "noopener");
+      window.open("https://t.me/share/url?url=" + enc(shareUrl) + "&text=" + enc(inviteText()), "_blank", "noopener");
     },
     email: function () {
-      location.href = "mailto:?subject=" + enc(shareText) + "&body=" + enc(shareText + "\n" + shareUrl);
+      location.href = "mailto:?subject=" + enc(inviteText()) + "&body=" + enc(inviteText() + "\n" + shareUrl);
     },
   };
 
@@ -916,7 +1225,7 @@
           copyLink();
           /* Confirm on the button itself */
           var original = channelBtn.textContent;
-          channelBtn.textContent = "Copied \u2713";
+          channelBtn.textContent = t.copied;
           setTimeout(function () { channelBtn.textContent = original; }, 1600);
         } else {
           shareChannels[key]();
@@ -1054,12 +1363,28 @@
     '<path class="fl__gem" d="M100 4.34 105.66 10 100 15.66 94.34 10Z"/>' +
     '</svg>';
 
-  (function initReveals() {
-    $$(".section-title").forEach(function (t) {
-      if (!t.nextElementSibling || !t.nextElementSibling.classList.contains("flourish")) {
-        t.insertAdjacentHTML("afterend", FLOURISH);
+  function injectFlourishes(rootScope) {
+    (rootScope || document).querySelectorAll(".section-title").forEach(function (el) {
+      if (el.nextElementSibling && el.nextElementSibling.classList.contains("flourish")) return;
+      el.insertAdjacentHTML("afterend", FLOURISH);
+      var flourish = el.nextElementSibling;
+      if (flourish) {
+        flourish.classList.add("reveal");
+        observeReveal(flourish);
       }
     });
+  }
+
+  // Before initReveals runs, dynamic content is picked up by its final
+  // $$(".reveal") sweep; after that, new nodes are observed on demand.
+  function observeReveal(el) {
+    if (!revealReady) return;
+    if (!revealIO) { el.classList.add("is-in"); return; }
+    revealIO.observe(el);
+  }
+
+  (function initReveals() {
+    injectFlourishes(document);
 
     var selectors = [
       ".welcome", ".countdown__panel", ".chapter", ".event-card",
@@ -1086,17 +1411,44 @@
           el.style.transitionDelay = Math.min(i % 4, 3) * 90 + "ms";
         });
       });
-      var io = new IntersectionObserver(function (entries) {
+      revealIO = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) {
             e.target.classList.add("is-in");
-            io.unobserve(e.target);
+            revealIO.unobserve(e.target);
           }
         });
       }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
-      $$(".reveal").forEach(function (el) { io.observe(el); });
+      $$(".reveal").forEach(function (el) { revealIO.observe(el); });
     } else {
       $$(".reveal").forEach(function (el) { el.classList.add("is-in"); });
     }
+    revealReady = true;
   })();
+
+  /* ============ 14. Language toggle (EN / বাংলা) ============ */
+  var langToggle = $("#langToggle");
+
+  function updateToggleUI() {
+    if (!langToggle) return;
+    var enOpt = langToggle.querySelector("[data-lang-opt='en']");
+    var bnOpt = langToggle.querySelector("[data-lang-opt='bn']");
+    if (enOpt) enOpt.classList.toggle("is-active", lang === "en");
+    if (bnOpt) bnOpt.classList.toggle("is-active", lang === "bn");
+    langToggle.setAttribute("aria-label", t.switchTo);
+  }
+
+  if (langToggle) {
+    if (bnAvailable) {
+      langToggle.addEventListener("click", function () {
+        setLang(lang === "bn" ? "en" : "bn", true);
+      });
+    } else {
+      // No Bangla content configured — hide the toggle, English-only site.
+      langToggle.hidden = true;
+    }
+  }
+
+  // Render the page in the visitor's language (default English).
+  setLang(initialLang(), false);
 })();

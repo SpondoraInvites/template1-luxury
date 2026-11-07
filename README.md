@@ -91,6 +91,29 @@ Fields that need small care:
   (mp3, ideally ≤2 MB). The current file is a soft generated ambient
   piano loop (placeholder only).
 
+### Languages (English / বাংলা)
+
+The invitation ships bilingual. English is the default; the EN/বাং toggle
+sits top-right. First-time visitors whose browser language starts with
+`bn` get Bangla automatically, and the choice is remembered in
+`localStorage` (`invite-lang`).
+
+- **Client content** is localised through the optional `bn:` block in
+  `config.js`. It mirrors the English fields; omit any field and it
+  falls back to the English value. Arrays (`story.chapters`, `events`,
+  `gallery.photos`, `customSections`) replace wholesale, so include
+  the whole array when you translate one.
+- **Interface text** (buttons, form labels, aria labels, share text) is
+  built into `script.js` in the `UI.en` / `UI.bn` tables. Add a key to
+  both if you introduce a new label.
+- Generated numerals (countdown, footer date, lightbox counter, RSVP
+  guest count) convert to Bangla digits automatically. Write dates,
+  times and addresses in the `bn:` block with Bangla digits directly.
+- The hero names are not split letter-by-letter in Bangla — splitting
+  breaks Bengali conjuncts and vowel signs.
+- Delete the `bn:` block and the toggle hides itself — the site becomes
+  English-only with no other changes.
+
 ### Themes, colours and fonts (sold as Luxury options)
 
 ```js
